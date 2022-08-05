@@ -1,57 +1,47 @@
-# Project Name
+# Dotnet Container App
 
-(short, 1-3 sentenced, description of the project)
+This .NET 6 example application to demonstrate the process of creating a container application and deploying it to Azure Kubernetes Services
 
-## Features
+![Application](/images/img01.png "Application")
 
-This project framework provides the following features:
+The project is divided as follows:
 
-* Feature 1
-* Feature 2
-* ...
+- **src/aspnetcoreiac:** Project for Bicep files for create Azure Environment
+- **src/aspnetcorewebapi:** Project for Rest APIs and communicate with database
+- **src/aspnetcorewebapp:** Project for my Web Application interact with API
+- **src/aspnetcorewebapi.test:** Project for run Unit Testing
+
 
 ## Getting Started
 
 ### Prerequisites
 
-(ideally very short, if any)
-
-- OS
-- Library version
-- ...
-
-### Installation
-
-(ideally very short)
-
-- npm install [package name]
-- mvn install
-- ...
+- [Dotnet 6](https://dotnet.microsoft.com/en-us/download/dotnet/6.0) 
+- [Visual Studio Code](https://code.visualstudio.com/download)
+- [Azure Account](https://azure.microsoft.com/en-us/free/)
 
 ### Quickstart
-(Add steps to get up and running quickly)
 
-1. git clone [repository clone url]
-2. cd [repository name]
-3. ...
+Follow the steps below to run the application locally
 
+```sh
+# Clone the repository
+git clone https://github.com/Azure-Samples/dotnet-container-app.git
 
-## Demo
+# switch to repository directory
+cd dotnet-container-app
 
-A demo app is included to show how to use the project.
+# Open Visual Studio Code
+code .
+```
 
-To run the demo, follow these steps:
+This application has the *.vscode\launch.json* file with the compound settings to run both projects (API and APP) at the same time
 
-(Add steps to start up the demo)
+![Compound Settings](/images/img02.png "Application")
 
-1.
-2.
-3.
+To run the application in debug mode, select the Debug menu and select the *aspnetcorewebapi & aspnetcorewebapp* option as shown in the image below
 
-## Resources
+![Running](/images/img03.png "Application")
 
-(Any additional resources or related projects)
+## Publish to Azure
 
-- Link to supporting information
-- Link to similar sample
-- ...
