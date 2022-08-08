@@ -31,6 +31,13 @@ jobs:
     - name: Test
       run: dotnet test src/aspnetcorewebapi.test/aspnetcorewebapi.test.csproj --configuration ${{ env.CONFIGURATION }} --no-build --logger "junit;LogFilePath=TestResults/tests.xml"
     
+    - name: Upload dotnet test results
+      uses: actions/upload-artifact@v2
+      with:
+        name: test-results
+        path: TestResults
+      if: ${{ always() }}
+      
     - name: Create test summary
       uses: test-summary/action@dist
       with:
