@@ -1,0 +1,44 @@
+name: aspnetcore.bicep
+
+on: workflow_dispatch
+
+#on:
+#  push:
+#    branches: [ main ]
+#  pull_request:
+#    branches: [ main ]
+
+env:
+  AZ_RG_NAME: 'rg-aspnetcore-demo'
+  AZ_ACR_NAME: 'acraspnetcoredemo'
+  AZ_AKS_NAME: 'aksaspnetcoredemo'
+  AZ_SQLSERVER_NAME: 'sqlserveraspnetcoredemo'
+  AZ_KEYVAULT_NAME: 'kvaspnetcoredemo'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    # Checkout code
+    - uses: actions/checkout@v2
+    
+    # Log into Azure
+    - name: Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    # Deploy Bicep file
+    - name: Deploy Template
+      uses: Azure/arm-deploy@v1.0.8
+      with:
+        scope: resourcegroup
+        resourceGroupName: ${{ env.AZ_RG_NAME }}
+        template: src/aspnetcoreiac/main.bicep
+        deploymentMode: Incremental
+        deploymentName: 'gh-actions'
+        parameters: acrName=${{ env.AZ_ACR_NAME }} clusterName=${{ env.AZ_AKS_NAME }} sqlserverName=${{ env.AZ_SQLSERVER_NAME }} kvName=${{ env.AZ_KEYVAULT_NAME}}        
+        failOnStdErr: false
