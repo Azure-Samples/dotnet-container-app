@@ -45,4 +45,5 @@ jobs:
         name: Tests
         path: 'TestResults/**/*.trx'
         reporter: dotnet-trx
+        only-summary: 'true'
       if: always()
