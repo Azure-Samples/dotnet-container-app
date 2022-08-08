@@ -30,16 +30,16 @@ jobs:
     
     - name: Test
       run: dotnet test src/aspnetcorewebapi.test/aspnetcorewebapi.test.csproj --configuration ${{ env.CONFIGURATION }} --no-build --verbosity normal --logger junit --results-directory TestResults
-    
-    - name: Upload dotnet test results
-      uses: actions/upload-artifact@v2
-      with:
-        name: test-results
-        path: TestResults
-      if: ${{ always() }}
 
     - name: Create test summary
       uses: test-summary/action@dist
       with:
         paths: TestResults/**/*.xml
+      if: always()
+
+    - uses: dorny/test-reporter@v1
+      with:
+        name: Tests
+        path: 'TestResults/**/*.xml'
+        reporter: jest-junit
       if: always()
