@@ -1,4 +1,4 @@
-// https://github.com/Azure/azure-quickstart-templates/tree/master/quickstarts/microsoft.containerregistry/container-registry
+// Reference: https://github.com/Azure/azure-quickstart-templates/tree/master/quickstarts/microsoft.containerregistry/container-registry
 
 @minLength(5)
 @maxLength(50)
