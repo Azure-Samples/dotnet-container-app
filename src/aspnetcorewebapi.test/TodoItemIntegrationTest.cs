@@ -121,7 +121,7 @@ namespace aspnetcorewebapi.test
         [Priority(2)]
         public void MyTest_Todo_Item()
         {
-            Assert.IsTrue(true);
+            Assert.IsFalse(true);
         }
     }
 }
