@@ -30,3 +30,9 @@ jobs:
     
     - name: Test
       run: dotnet test src/aspnetcorewebapi.test/aspnetcorewebapi.test.csproj --configuration ${{ env.CONFIGURATION }} --no-build --verbosity normal --logger trx --results-directory TestResults
+    
+    - name: Create test summary
+      uses: test-summary/action@dist
+      with:
+        paths: TestResults/**/*.xml
+      if: always()
