@@ -29,7 +29,7 @@ jobs:
       run: dotnet build src/aspnetcore.sln --configuration ${{ env.CONFIGURATION }} --no-restore
     
     - name: Test
-      run: dotnet test src/aspnetcorewebapi.test/aspnetcorewebapi.test.csproj --configuration ${{ env.CONFIGURATION }} --no-build --logger "junit;LogFilePath=TestResults/tests.xml"
+      run: dotnet test src/aspnetcorewebapi.test/aspnetcorewebapi.test.csproj --configuration ${{ env.CONFIGURATION }} --no-build --verbosity normal --logger trx --results-directory TestResults
     
     - name: Upload dotnet test results
       uses: actions/upload-artifact@v2
@@ -37,7 +37,7 @@ jobs:
         name: test-results
         path: TestResults
       if: ${{ always() }}
-      
+
     - name: Create test summary
       uses: test-summary/action@dist
       with:
