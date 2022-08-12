@@ -29,29 +29,3 @@ module sqlModule 'SQLServer.bicep' = {
     databaseName: 'TodoItem_DB'
   }
 }
-
-var secrets =  {
-  secrets: [
-    {
-      secretName: 'Secret01'
-      secretValue: 'Value01'
-    }
-    {
-      secretName: 'Secret02'
-      secretValue: 'Value02'
-    }
-    {
-      secretName: 'Secret03'
-      secretValue: 'Value03'
-    }
-  ]
-}
-
-module keyVaultModule 'KeyVault.bicep' = {
-  name: 'keyVaultDeploy'
-  params: {
-    keyVaultName: kvName
-    objectId: '051c760b-9769-4f0f-9828-09197ff28b7c'
-    secretsObject: secrets
-  }
-}
