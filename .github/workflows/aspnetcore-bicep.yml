@@ -9,11 +9,11 @@ on: workflow_dispatch
 #    branches: [ main ]
 
 env:
-  AZ_RG_NAME: 'rg-aspnetcore-demo'
-  AZ_ACR_NAME: 'acraspnetcoredemo'
-  AZ_AKS_NAME: 'aksaspnetcoredemo'
-  AZ_SQLSERVER_NAME: 'sqlserveraspnetcoredemo'
-  AZ_KEYVAULT_NAME: 'kvaspnetcoredemo'
+  AZ_RG_NAME: 'rg-dotnet-containerapp'
+  AZ_ACR_NAME: 'acrdotnetcontainerapp'
+  AZ_AKS_NAME: 'aksdotnetcontainerapp'
+  AZ_SQLSERVER_NAME: 'sqldotnetcontainerapp'
+  AZ_KEYVAULT_NAME: 'kvdotnet-containerapp'
 
 jobs:
   build:
