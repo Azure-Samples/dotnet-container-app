@@ -9,8 +9,8 @@ on: workflow_dispatch
 #    branches: [ main ]
 
 env:
-  AZ_RG_NAME: 'rg-aspnetcore-demo'
-  AZ_AKS_NAME: 'aksaspnetcoredemo'
+  AZ_RG_NAME: 'rg-dotnet-containerapp'
+  AZ_AKS_NAME: 'aksdotnetcontainerapp'
 
 jobs:
   build:
