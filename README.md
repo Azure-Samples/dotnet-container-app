@@ -157,15 +157,15 @@ Store the output values as a GitHub secret named *ACR_URL*, *ACR_LOGIN* and *ACR
 
 Repeat these steps for the secrets ACR_LOGIN and ACR_PASSWORD.
 
-![GitHub Secrets for ACR](/images/img08.png "GitHub Secrets for ACR")
-
 Finally we will need the database connection string, store the output value as a GitHub secret named SQL_CONNECTION.
 
 ```
 az sql db show-connection-string --name TodoItem_DB --server sqldotnetcontainerapp --client ado.net --output tsv
 ```
 
-In the end we should have the following secrets created.
+In the end we should have the following GitHub secrets created.
+
+![GitHub Secrets for ACR](/images/img08.png "GitHub Secrets for ACR")
 
 Now we can deploy our application to AKS by starting the workflow [aspnetcore.docker.yml](.github/workflows/aspnetcore-docker.yml). This workflow has the following steps
 
@@ -183,8 +183,8 @@ Now we can deploy our application to AKS by starting the workflow [aspnetcore.do
 
 After the workflow ends, our application will be available for use.
 - Log in Azure Portal
-- Select the resouce group rg-dotnet-containerapp
-- Select the AKS cluster aksdotnetcontainerapp
+- Select the resouce group *rg-dotnet-containerapp*
+- Select the AKS cluster *aksdotnetcontainerapp*
 - In the *Kubernetes resources* section of the sidebar, click *Services and ingresses*
 - Check the external IP for the *aspnetcorewebapp-svc* service
 
