@@ -6,11 +6,10 @@ This .NET 6 example application to demonstrate the process of creating a contain
 
 The project is divided as follows:
 
-- **src/aspnetcoreiac:** Project for Bicep files for create Azure Environment
-- **src/aspnetcorewebapi:** Project for Rest APIs and communicate with database
-- **src/aspnetcorewebapp:** Project for my Web Application interact with API
-- **src/aspnetcorewebapi.test:** Project for run Unit Testing
-
+- **src/aspnetcoreiac:** Bicep files for create Azure environment
+- **src/aspnetcorewebapi:** Rest APIs to communicate with database
+- **src/aspnetcorewebapp:** Web Application interact with rest API
+- **src/aspnetcorewebapi.test:** Unit Testing project
 
 ## Getting Started
 
@@ -35,7 +34,7 @@ cd dotnet-container-app
 code .
 ```
 
-This application has the *.vscode\launch.json* file with the compound settings to run both projects (API and APP) at the same time
+This application has the *.vscode/launch.json* file with the compound settings to run both projects (API and APP) at the same time
 
 ![Compound Settings](/images/img02.png "Application")
 
@@ -134,7 +133,7 @@ After deployment, below resources will be created
 
 ![Azure Resources](/images/img07.png "Azure Resources")
 
-After our environment is available, we need to create some secrets variables to connect Azure Container Registry (ACR).
+After our environment is available, we need to create some GitHub Secrets variables to connect Azure Container Registry (ACR).
 
 ```sh
 # Show login server url
@@ -182,6 +181,7 @@ Now we can deploy our application to AKS by starting the workflow [aspnetcore.do
     - Deploy the application to AKS
 
 After the workflow ends, our application will be available for use.
+
 - Log in Azure Portal
 - Select the resouce group *rg-dotnet-containerapp*
 - Select the AKS cluster *aksdotnetcontainerapp*
