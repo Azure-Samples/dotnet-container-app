@@ -33,9 +33,9 @@ jobs:
         echo "ACR_URL=http://url.com.br" >> $GITHUB_ENV
         echo "ACR_LOGIN=leandroprado" >> $GITHUB_ENV
         echo "ACR_PASSWORD=P@assword" >> $GITHUB_ENV
-        echo "::add-mask::${{ env.ACR_LOGIN }}"
-        echo "::add-mask::${{ env.ACR_PASSWORD }}"
-        
+        echo "::add-mask::$ACR_LOGIN"
+        echo "::add-mask::$ACR_PASSWORD"
+
     - name: Use the value
       id: read_variable
       run: |
