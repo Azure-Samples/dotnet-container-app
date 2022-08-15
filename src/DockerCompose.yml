@@ -1,0 +1,43 @@
+version: '3.6'
+
+services:
+  aspnetcoreapp:
+    container_name: aspnetcorewebapp
+    image: aspnetcorewebapp
+    build:
+      context: aspnetcorewebapp
+      dockerfile: Dockerfile
+    environment:
+      - ApiAddress=http://aspnetcorewebapi
+    ports:
+      - 7171:80
+    links:
+      - aspnetcoreapi
+    depends_on:
+      - aspnetcoreapi
+  aspnetcoreapi:
+    container_name: aspnetcorewebapi
+    image: aspnetcorewebapi
+    links:
+      - sql-server-db
+    depends_on:
+      - sql-server-db
+    build:
+      context: aspnetcorewebapi
+      dockerfile: Dockerfile
+    ports:
+      - 7272:80
+    environment:
+      - MyDbContext=Server=aspnetcoredb;Database=TodoItem_DB;User Id=sa;Password=P@ssw0rd;
+  sql-server-db:
+    container_name: aspnetcoredb
+    image: mcr.microsoft.com/mssql/server:2017-latest-ubuntu
+    ports:
+      - "3333:1433"
+    environment:
+      SA_PASSWORD: "P@ssw0rd"
+      ACCEPT_EULA: "Y"
+    volumes:
+      - sqldata-volume:/var/opt/mssql
+volumes:
+  sqldata-volume:

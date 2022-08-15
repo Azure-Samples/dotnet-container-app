@@ -1,0 +1,127 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: aspnetcorewebapp-svc
+spec:
+  type: LoadBalancer
+  selector:
+    app: aspnetcorewebapp
+    tier: frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aspnetcorewebapp-deploy
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: aspnetcorewebapp
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        app: aspnetcorewebapp
+        tier: frontend
+    spec:
+      containers:
+        - name: aspnetcorewebapp
+          image: "_ImageUrlApp_"
+          env:
+            - name: ApiAddress
+              value: "http://aspnetcorewebapi-svc.default.svc.cluster.local"
+          ports:
+            - name: http
+              containerPort: 80
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+      imagePullSecrets:
+        - name: mysecret
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: aspnetcorewebapi-svc
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+spec:
+  type: LoadBalancer
+  selector:
+    app: aspnetcorewebapi
+    tier: backend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aspnetcorewebapi-deploy
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: aspnetcorewebapi
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: aspnetcorewebapi
+        tier: backend
+    spec:
+      containers:
+        - name: aspnetcorewebapi
+          image: "_ImageUrlApi_"
+          env:
+            - name: MyDbContext
+              value: "_ConnString_"
+          ports:
+            - name: http
+              containerPort: 80
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+      imagePullSecrets:
+        - name: mysecret
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: aspnetcorewebapp-scaler
+  namespace: default
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: aspnetcorewebapp-deploy
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 20
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: aspnetcorewebapi-scaler
+  namespace: default
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: aspnetcorewebapi-deploy
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 20

@@ -1,0 +1,49 @@
+name: aspnetcore.CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  CONFIGURATION: Release
+  
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Setup .NET Core SDK
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+    
+    - name: Restore
+      run: dotnet restore src/aspnetcore.sln
+    
+    - name: Build
+      run: dotnet build src/aspnetcore.sln --configuration ${{ env.CONFIGURATION }} --no-restore
+    
+    #- name: Test
+    #  run: dotnet test src/aspnetcorewebapi.test/aspnetcorewebapi.test.csproj --configuration ${{ env.CONFIGURATION }} --no-build --verbosity normal --logger junit --results-directory TestResults
+    
+    - name: Test
+      run: dotnet test src/aspnetcorewebapi.test/aspnetcorewebapi.test.csproj --configuration ${{ env.CONFIGURATION }} --no-build --verbosity normal --logger trx --results-directory TestResults
+    
+    #- name: Create test summary
+    #  uses: test-summary/action@dist
+    #  with:
+    #    paths: TestResults/**/*.xml
+    #  if: always()
+
+    - uses: dorny/test-reporter@v1
+      with:
+        name: Tests
+        path: 'TestResults/**/*.trx'
+        reporter: dotnet-trx
+        only-summary: 'false'
+      if: always()
