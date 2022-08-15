@@ -27,58 +27,56 @@ jobs:
       env:
         Version: ${{ GITHUB.RUN_NUMBER }}
     
-    - name: Set the value in bash
-      id: set_variable
-      run: |
-        echo "ACR_URL=http://url.com.br" >> $GITHUB_ENV
-        echo "ACR_LOGIN=leandroprado" >> $GITHUB_ENV
-        echo "ACR_PASSWORD=P@assword" >> $GITHUB_ENV
-        echo "::add-mask::$ACR_LOGIN"
-        echo "::add-mask::$ACR_PASSWORD"
+    #- name: Set the value in bash
+    #  id: set_variable
+    #  run: |
+    #    echo "ACR_URL=http://url.com.br" >> $GITHUB_ENV
+    #    echo "ACR_LOGIN=leandroprado" >> $GITHUB_ENV
+    #    echo "ACR_PASSWORD=P@assword" >> $GITHUB_ENV
 
-    - name: Use the value
-      id: read_variable
+    #- name: Use the value
+    #  id: read_variable
+    #  run: |
+    #    echo "${{ env.ACR_URL }}"
+    #    echo "${{ env.ACR_LOGIN }}"
+    #    echo "${{ env.ACR_PASSWORD }}"
+        
+    - name: Docker Login
+      uses: docker/login-action@v1.14.1
+      with:
+        registry: ${{ secrets.ACR_URL }}
+        username: ${{ secrets.ACR_LOGIN }}
+        password: ${{ secrets.ACR_PASSWORD }}
+    
+    - name: Build and push aspnetcorewebapi image
+      uses: docker/build-push-action@v2.10.0
+      with:
+        context: src/aspnetcorewebapi
+        file: src/aspnetcorewebapi/Dockerfile
+        tags: |
+          ${{secrets.ACR_URL}}/aspnetcorewebapi:${{ GITHUB.RUN_NUMBER }}
+          ${{secrets.ACR_URL}}/aspnetcorewebapi:latest
+        push: true
+        
+    - name: Build and push aspnetcorewebapp image
+      uses: docker/build-push-action@v2.10.0
+      with:
+        context: src/aspnetcorewebapp
+        file: src/aspnetcorewebapp/Dockerfile
+        tags: | 
+          ${{secrets.ACR_URL}}/aspnetcorewebapp:${{ GITHUB.RUN_NUMBER }}
+          ${{secrets.ACR_URL}}/aspnetcorewebapp:latest
+        push: true
+    
+    - name: Replace variables
       run: |
-        echo "${{ env.ACR_URL }}"
-        echo "${{ env.ACR_LOGIN }}"
-        echo "${{ env.ACR_PASSWORD }}"
-        
-    # - name: Docker Login
-    #   uses: docker/login-action@v1.14.1
-    #   with:
-    #     registry: ${{ secrets.ACR_URL }}
-    #     username: ${{ secrets.ACR_LOGIN }}
-    #     password: ${{ secrets.ACR_PASSWORD }}
-    
-    # - name: Build and push aspnetcorewebapi image
-    #   uses: docker/build-push-action@v2.10.0
-    #   with:
-    #     context: src/aspnetcorewebapi
-    #     file: src/aspnetcorewebapi/Dockerfile
-    #     tags: |
-    #       ${{secrets.ACR_URL}}/aspnetcorewebapi:${{ GITHUB.RUN_NUMBER }}
-    #       ${{secrets.ACR_URL}}/aspnetcorewebapi:latest
-    #     push: true
-        
-    # - name: Build and push aspnetcorewebapp image
-    #   uses: docker/build-push-action@v2.10.0
-    #   with:
-    #     context: src/aspnetcorewebapp
-    #     file: src/aspnetcorewebapp/Dockerfile
-    #     tags: | 
-    #       ${{secrets.ACR_URL}}/aspnetcorewebapp:${{ GITHUB.RUN_NUMBER }}
-    #       ${{secrets.ACR_URL}}/aspnetcorewebapp:latest
-    #     push: true
-    
-    # - name: Replace variables
-    #   run: |
-    #     echo Build Number = ${{ GITHUB.RUN_NUMBER }}
-    #     urlApp=${{secrets.ACR_URL}}/aspnetcorewebapp:${{ GITHUB.RUN_NUMBER }}
-    #     urlApi=${{secrets.ACR_URL}}/aspnetcorewebapi:${{ GITHUB.RUN_NUMBER }}
+        echo Build Number = ${{ GITHUB.RUN_NUMBER }}
+        urlApp=${{secrets.ACR_URL}}/aspnetcorewebapp:${{ GITHUB.RUN_NUMBER }}
+        urlApi=${{secrets.ACR_URL}}/aspnetcorewebapi:${{ GITHUB.RUN_NUMBER }}
 
-    #     sed -i "s|_ImageUrlApp_|$urlApp|g" src/kubernetes-containerapp.yaml
-    #     sed -i "s|_ImageUrlApi_|$urlApi|g" src/kubernetes-containerapp.yaml
-    #     sed -i "s|_ConnString_|${{secrets.SQL_CONNECTION}}|g" src/kubernetes-containerapp.yaml
+        sed -i "s|_ImageUrlApp_|$urlApp|g" src/kubernetes-containerapp.yaml
+        sed -i "s|_ImageUrlApi_|$urlApi|g" src/kubernetes-containerapp.yaml
+        sed -i "s|_ConnString_|${{secrets.SQL_CONNECTION}}|g" src/kubernetes-containerapp.yaml
 
     - name: Upload Kubernetes files
       uses: actions/upload-artifact@v3.0.0
@@ -97,29 +95,29 @@ jobs:
           name: k8s
           path: my-app-artifact
       
-      # # Set the target Azure Kubernetes Service (AKS) cluster. 
-      # - name: Deploy set context
-      #   uses: azure/aks-set-context@v1
-      #   with:
-      #     creds: '${{ secrets.AZURE_CREDENTIALS }}'
-      #     cluster-name: ${{ env.AZ_AKS_NAME }}
-      #     resource-group: ${{ env.AZ_RG_NAME }}
+      # Set the target Azure Kubernetes Service (AKS) cluster. 
+      - name: Deploy set context
+        uses: azure/aks-set-context@v1
+        with:
+          creds: '${{ secrets.AZURE_CREDENTIALS }}'
+          cluster-name: ${{ env.AZ_AKS_NAME }}
+          resource-group: ${{ env.AZ_RG_NAME }}
       
-      # # Create image pull secret for ACR
-      # - name: Create k8s secret
-      #   uses: azure/k8s-create-secret@v1
-      #   with:
-      #     container-registry-url: ${{secrets.ACR_URL}}
-      #     container-registry-username: ${{ secrets.ACR_LOGIN }}
-      #     container-registry-password:  ${{ secrets.ACR_PASSWORD }}
-      #     secret-name: mysecret
-      #     namespace: default
-      #     arguments: --force true
+      # Create image pull secret for ACR
+      - name: Create k8s secret
+        uses: azure/k8s-create-secret@v1
+        with:
+          container-registry-url: ${{secrets.ACR_URL}}
+          container-registry-username: ${{ secrets.ACR_LOGIN }}
+          container-registry-password:  ${{ secrets.ACR_PASSWORD }}
+          secret-name: mysecret
+          namespace: default
+          arguments: --force true
 
-      # # Deploy app to AKS
-      # - name: Deploy to k8s
-      #   uses: azure/k8s-deploy@v1
-      #   with:
-      #     manifests: my-app-artifact/kubernetes-containerapp.yaml
-      #     imagepullsecrets: mysecret
-      #     namespace: default
+      # Deploy app to AKS
+      - name: Deploy to k8s
+        uses: azure/k8s-deploy@v1
+        with:
+          manifests: my-app-artifact/kubernetes-containerapp.yaml
+          imagepullsecrets: mysecret
+          namespace: default
