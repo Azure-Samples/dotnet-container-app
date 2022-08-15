@@ -38,7 +38,7 @@ This application has the *.vscode/launch.json* file with the compound settings t
 
 ![Compound Settings](/images/img02.png "Application")
 
-To run the application in debug mode, select the Debug menu and select the *aspnetcorewebapi & aspnetcorewebapp* option as shown in the image below
+To run the application in debug mode, select the *Debug* menu and select the *aspnetcorewebapi & aspnetcorewebapp* option as shown in the image below
 
 ![Running](/images/img03.png "Application")
 
