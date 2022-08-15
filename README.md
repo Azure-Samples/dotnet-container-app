@@ -1,6 +1,6 @@
 # Dotnet Container App
 
-This .NET 6 example application to demonstrate the process of creating a container application and deploying it to Azure Kubernetes Services
+This .NET 6 example application to demonstrate the process of creating a container application and deploying it to Azure Kubernetes Services (AKS)
 
 ![Application](/images/img01.png "Application")
 
