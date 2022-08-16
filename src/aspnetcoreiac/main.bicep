@@ -1,7 +1,6 @@
 param acrName string
 param clusterName string
 param sqlserverName string
-param kvName string
 
 module acrModule 'ContainerRegistry.bicep' = {
   name: 'acrDeploy'
