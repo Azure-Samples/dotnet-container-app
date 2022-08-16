@@ -12,7 +12,7 @@ env:
   AZ_RG_NAME: 'rg-dotnet-containerapp'
   AZ_ACR_NAME: 'acrdotnetcontainerapp'
   AZ_AKS_NAME: 'aksdotnetcontainerapp'
-  AZ_SQLSERVER_NAME: 'sqldotnetcontainerapp'
+  AZ_SQLSERVER_NAME: 'sqldotnetcontainerapp123'
   AZ_KEYVAULT_NAME: 'kvdotnet-containerapp'
 
 jobs:
