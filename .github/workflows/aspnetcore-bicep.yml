@@ -14,6 +14,7 @@ env:
   AZ_AKS_NAME: 'aksdotnetcontainerapp'
   AZ_SQLSERVER_NAME: 'sqldotnetcontainerapp123'
   AZ_KEYVAULT_NAME: 'kvdotnet-containerapp'
+  LOCATION: 'eastus'
 
 jobs:
   build:
@@ -40,5 +41,5 @@ jobs:
         template: src/aspnetcoreiac/main.bicep
         deploymentMode: Incremental
         deploymentName: 'gh-actions'
-        parameters: acrName=${{ env.AZ_ACR_NAME }} clusterName=${{ env.AZ_AKS_NAME }} sqlserverName=${{ env.AZ_SQLSERVER_NAME }} kvName=${{ env.AZ_KEYVAULT_NAME}}        
+        parameters: acrName=${{ env.AZ_ACR_NAME }} clusterName=${{ env.AZ_AKS_NAME }} sqlserverName=${{ env.AZ_SQLSERVER_NAME }} location=${{ env.LOCATION }}
         failOnStdErr: false
