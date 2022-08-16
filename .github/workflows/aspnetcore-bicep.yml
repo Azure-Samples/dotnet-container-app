@@ -10,7 +10,7 @@ on: workflow_dispatch
 
 env:
   AZ_RG_NAME: 'rg-dotnet-containerapp'
-  AZ_ACR_NAME: 'acrdotnetcontainerapp'
+  AZ_ACR_NAME: 'acrdotnetcontainerapp123'
   AZ_AKS_NAME: 'aksdotnetcontainerapp'
   AZ_SQLSERVER_NAME: 'sqldotnetcontainerapp123'
   AZ_KEYVAULT_NAME: 'kvdotnet-containerapp'

@@ -15,7 +15,7 @@ The project is divided as follows:
 
 ### Prerequisites
 
-- [Dotnet 6](https://dotnet.microsoft.com/en-us/download/dotnet/6.0) 
+- [Dotnet 6](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
 - [Visual Studio Code](https://code.visualstudio.com/download)
 - [Azure Account](https://azure.microsoft.com/en-us/free/)
 
@@ -37,6 +37,14 @@ code .
 This application has the *.vscode/launch.json* file with the compound settings to run both projects (API and APP) at the same time
 
 ![Compound Settings](/images/img02.png "Application")
+
+You will need to configure the ```Connection String``` in file */src/aspnetcorewebapi/appsettings.json*
+
+![Connection String](/images/img10.png "Application")
+
+```Sample:
+*Data Source=(LocalDb)\\MSSQLLocalDB;Initial Catalog=TodoItem_DB;Integrated Security=SSPI;*
+```
 
 To run the application in debug mode, select the *Debug* menu and select the *aspnetcorewebapi & aspnetcorewebapp* option as shown in the image below
 
@@ -169,16 +177,16 @@ In the end we should have the following GitHub secrets created.
 Now we can deploy our application to AKS by starting the workflow [aspnetcore.docker.yml](.github/workflows/aspnetcore-docker.yml). This workflow has the following steps
 
 - **Build**
-    - Check out source code
-    - Docker Login to ACR
-    - Docker Build and Push to ACR
-    - Replace the image URL variables
-    - Create kubernetes YML artifact
+  - Check out source code
+  - Docker Login to ACR
+  - Docker Build and Push to ACR
+  - Replace the image URL variables
+  - Create kubernetes YML artifact
 - **Release**
-    - Download the kubernetes YML artifact 
-    - Configure the AKS context 
-    - Create Secret
-    - Deploy the application to AKS
+  - Download the kubernetes YML artifact
+  - Configure the AKS context
+  - Create Secret
+  - Deploy the application to AKS
 
 After the workflow ends, our application will be available for use.
 
