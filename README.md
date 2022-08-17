@@ -42,13 +42,13 @@ You will need to configure the ```Connection String``` in file */src/aspnetcorew
 
 ![Connection String](/images/img10.png "Application")
 
-```Sample:
-*Data Source=(LocalDb)\\MSSQLLocalDB;Initial Catalog=TodoItem_DB;Integrated Security=SSPI;*
-```
+Connection String example: *Data Source=(LocalDb)\\MSSQLLocalDB;Initial Catalog=TodoItem_DB;Integrated Security=SSPI;*
 
 To run the application in debug mode, select the *Debug* menu and select the *aspnetcorewebapi & aspnetcorewebapp* option as shown in the image below
 
 ![Running](/images/img03.png "Application")
+
+Links to: [Web App](https://localhost:6001/) / [Web Api](https://localhost:5001/)
 
 Another option to run application based on docker containers. This application user 3 containers as show bellow:
 
@@ -98,7 +98,7 @@ Next step is create a Service Principal identity to GitHub connect in this Azure
 
 ```sh
 # Create Service Principal
-az ad sp create-for-rbac --name spn-dotnet-containerapp --role contributor --scopes /subscriptions/$subscriptionID/resourceGroups/$rgName --sdk-auth 
+az ad sp create-for-rbac --name api://<Service Principal Name> --role contributor --scopes /subscriptions/$subscriptionID/resourceGroups/$rgName --sdk-auth 
 ```
 
 The command should output a JSON object similar to this:
@@ -119,6 +119,7 @@ The command should output a JSON object similar to this:
 ```
 
 Store the output JSON as the value of a GitHub Actions secret named 'AZURE_CREDENTIALS'
+
 - Under your repository name, click *Settings*.
 - In the *Security* section of the sidebar, click *Secrets* and select *Actions*.
 - At the top of the page, click *New repository secret*
@@ -130,6 +131,11 @@ Store the output JSON as the value of a GitHub Actions secret named 'AZURE_CREDE
 
 Now we are ready to start the workflow [aspnetcore-bicep.yml](.github/workflows/aspnetcore-bicep.yml) that executes the bicep file and creates all the resources that the application needs.
 
+- Navigate to the file [aspnetcore-bicep.yml](.github/workflows/aspnetcore-bicep.yml) and replace the variable values.
+  - AZ_ACR_NAME
+  - AZ_AKS_NAME
+  - AZ_SQLSERVER_NAME
+  - AZ_KEYVAULT_NAME
 - Under your repository name, click *Actions* tab.
 - In the left sidebar, click the workflow "aspnetcore.bicep".
 - Above the list of workflow runs, select *Run workflow*.
@@ -141,20 +147,23 @@ After deployment, below resources will be created
 
 ![Azure Resources](/images/img07.png "Azure Resources")
 
+Errors can occur when you use a resource provider you haven't already used in your Azure subscription. [Resolve errors for resource provider registration](https://docs.microsoft.com/en-us/azure/azure-resource-manager/troubleshooting/error-register-resource-provider?tabs=azure-cli).
+
 After our environment is available, we need to create some GitHub Secrets variables to connect Azure Container Registry (ACR).
 
 ```sh
 # Show login server url
-az acr show -n acrdotnetcontainerapp --query loginServer --output tsv
+az acr show -n <Container Registry Name> --query loginServer --output tsv
 
 # Show username
-az acr credential show -n acrdotnetcontainerapp --query username --output tsv
+az acr credential show -n <Container Registry Name> --query username --output tsv
 
 # Show password
-az acr credential show -n acrdotnetcontainerapp --query passwords[0].value --output tsv
+az acr credential show -n <Container Registry Name> --query passwords[0].value --output tsv
 ```
 
 Store the output values as a GitHub secret named *ACR_URL*, *ACR_LOGIN* and *ACR_PASSWORD*
+
 - Under your repository name, click *Settings*.
 - In the *Security* section of the sidebar, click *Secrets* and select *Actions*.
 - At the top of the page, click *New repository secret*
