@@ -43,6 +43,8 @@ resource aks 'Microsoft.ContainerService/managedClusters@2020-09-01' = {
     type: 'SystemAssigned'
   }
   properties: {
+    kubernetesVersion: '1.24.3'
+    nodeResourceGroup: 'rg-${clusterName}-infra'
     dnsPrefix: dnsPrefix
     agentPoolProfiles: [
       {
