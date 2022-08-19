@@ -17,8 +17,8 @@ module aksModule 'Kubernetes.bicep' = {
     clusterName: clusterName
     location: location
     dnsPrefix: clusterName
-    linuxAdminUsername: 'leandroprado'
-    sshRSAPublicKey: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD7N8ZXEi+08cUSEVfxrkUU6jfwSQgcDxGEGdxWAz4hYHkHnv7qC+Xe2mvSitmSxUTXjVBprCGsKxvckAJl1xaeGKf0eC1gX+fVxcaAICy19MHYXE1ChTP+lqzRLeTqEGXLwOxWdrZgQmwITBza/9Yw7MHnc+VFN7xFolp0eG0cZMKMI3JyyJpODBBFZW0MTyMcHMVKzPMOo7Od7EUnK2+o/2bSOUkyc5b2qweKWparoEWUA7w5Zp9fOBL1cr9mRYFBhpnQkvgovbmSGgKn1XuN9DJRwlKDrr9o9SvKjSYIYgPEemMzivKhFUl4Okk3iOxuuQbhXSalFjpy9zvzRMl7 southamerica\\leadro@leadro-2021'
+    linuxAdminUsername: '<Linux Admin Username>'
+    sshRSAPublicKey: '<SSH RSA Public Key>'
   }
 }
 
@@ -27,8 +27,8 @@ module sqlModule 'SQLServer.bicep' = {
   params: {
     sqlserverName: sqlserverName
     location: location
-    sqlAdministratorLogin: 'leandro'
-    sqlAdministratorLoginPassword: '#P@ssw0rd1234#'
+    sqlAdministratorLogin: '<SQL Administrator Login>'
+    sqlAdministratorLoginPassword: '<SQL Administrator Login Password>'
     databaseName: 'TodoItem_DB'
   }
 }

@@ -10,10 +10,10 @@ on: workflow_dispatch
 
 env:
   AZ_RG_NAME: 'rg-dotnet-containerapp'
-  AZ_ACR_NAME: 'acrdotnetcontainerapp123'
-  AZ_AKS_NAME: 'aksdotnetcontainerapp'
-  AZ_SQLSERVER_NAME: 'sqldotnetcontainerapp123'
-  AZ_KEYVAULT_NAME: 'kvdotnet-containerapp'
+  AZ_ACR_NAME: '<Container Registry Name>'
+  AZ_AKS_NAME: '<Kubernetes Service Name>'
+  AZ_SQLSERVER_NAME: '<SQL Server Name>'
+  AZ_KEYVAULT_NAME: '<Key Vault Name>'
   LOCATION: 'eastus'
 
 jobs:

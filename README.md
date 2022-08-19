@@ -136,6 +136,11 @@ Now we are ready to start the workflow [aspnetcore-bicep.yml](.github/workflows/
   - AZ_AKS_NAME
   - AZ_SQLSERVER_NAME
   - AZ_KEYVAULT_NAME
+- Navigate to the file [main.bicep](src/aspnetcoreiac/main.bicep) and replace the parameters values.
+  - linuxAdminUsername
+  - sshRSAPublicKey
+  - sqlAdministratorLogin
+  - sqlAdministratorLoginPassword
 - Under your repository name, click *Actions* tab.
 - In the left sidebar, click the workflow "aspnetcore.bicep".
 - Above the list of workflow runs, select *Run workflow*.
@@ -176,7 +181,7 @@ Repeat these steps for the secrets ACR_LOGIN and ACR_PASSWORD.
 Finally we will need the database connection string, store the output value as a GitHub secret named SQL_CONNECTION.
 
 ```
-az sql db show-connection-string --name TodoItem_DB --server sqldotnetcontainerapp --client ado.net --output tsv
+az sql db show-connection-string --name TodoItem_DB --server <SQL Server Name> --client ado.net --output tsv
 ```
 
 In the end we should have the following GitHub secrets created.
@@ -201,7 +206,7 @@ After the workflow ends, our application will be available for use.
 
 - Log in Azure Portal
 - Select the resouce group *rg-dotnet-containerapp*
-- Select the AKS cluster *aksdotnetcontainerapp*
+- Select the AKS cluster *Kubernetes Service Name*
 - In the *Kubernetes resources* section of the sidebar, click *Services and ingresses*
 - Check the external IP for the *aspnetcorewebapp-svc* service
 
