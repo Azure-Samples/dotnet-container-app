@@ -23,6 +23,9 @@ param agentCount int = 2
 @description('The size of the Virtual Machine.')
 param agentVMSize string = 'Standard_DS2_v2'
 
+@description('The size of the Virtual Machine.')
+param aksVersion string = '1.23.8'
+
 var logAnalyticsName = toLower('log-${clusterName}')
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-03-01-preview' = {
@@ -43,7 +46,7 @@ resource aks 'Microsoft.ContainerService/managedClusters@2020-09-01' = {
     type: 'SystemAssigned'
   }
   properties: {
-    kubernetesVersion: '1.24.3'
+    kubernetesVersion: aksVersion
     nodeResourceGroup: 'rg-${clusterName}-infra'
     dnsPrefix: dnsPrefix
     agentPoolProfiles: [
