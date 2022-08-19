@@ -23,7 +23,7 @@ param agentCount int = 2
 @description('The size of the Virtual Machine.')
 param agentVMSize string = 'Standard_DS2_v2'
 
-@description('The size of the Virtual Machine.')
+@description('The version of AKS.')
 param aksVersion string = '1.23.8'
 
 var logAnalyticsName = toLower('log-${clusterName}')
