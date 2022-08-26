@@ -49,7 +49,7 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |
-            az deployment sub create --location ${{ env.AZ_RG_LOCATION }} --template-file src/aspnetcoreiac/main.bicep --parameters rgName=${{ env.AZ_RG_NAME }} rgLocation=${{ env.AZ_RG_LOCATION }} acrName=${{ env.AZ_ACR_NAME }} clusterName=${{ env.AZ_AKS_NAME }} sqlserverName=${{ env.AZ_SQLSERVER_NAME }}
+            az deployment sub create --location ${{ env.AZ_RG_LOCATION }} --template-file $GITHUB_WORKSPACE/src/aspnetcoreiac/main.bicep --parameters rgName=${{ env.AZ_RG_NAME }} rgLocation=${{ env.AZ_RG_LOCATION }} acrName=${{ env.AZ_ACR_NAME }} clusterName=${{ env.AZ_AKS_NAME }} sqlserverName=${{ env.AZ_SQLSERVER_NAME }}
 
   build:
     needs: iac
