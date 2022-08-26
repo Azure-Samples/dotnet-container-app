@@ -115,7 +115,7 @@ jobs:
           echo Build Number = ${{ GITHUB.RUN_NUMBER }}
           urlApp=${{ env.ACR_URL }}/aspnetcorewebapp:${{ GITHUB.RUN_NUMBER }}
           urlApi=${{ env.ACR_URL }}/aspnetcorewebapi:${{ GITHUB.RUN_NUMBER }}
-          sqlConnString="Server=tcp:sqldotnetcontainerapp.database.windows.net,1433;Initial Catalog=TodoItem_DB;Persist Security Info=False;User ID=${{ secrets.AZURE_SQL_USERNAME }};Password=${{ secrets.AZURE_SQL_PASSWORD }};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;
+          sqlConnString="Server=tcp:sqldotnetcontainerapp.database.windows.net,1433;Initial Catalog=TodoItem_DB;Persist Security Info=False;User ID=${{ secrets.AZURE_SQL_USERNAME }};Password=${{ secrets.AZURE_SQL_PASSWORD }};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
 
           sed -i "s|_ImageUrlApp_|$urlApp|g" src/kubernetes-containerapp.yaml
           sed -i "s|_ImageUrlApi_|$urlApi|g" src/kubernetes-containerapp.yaml
