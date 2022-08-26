@@ -117,6 +117,10 @@ Store the output JSON as the value of a GitHub Actions secret named 'AZURE_CREDE
 
 ![Add Secret](/images/img05.png "Add Secret")
 
+Create other two secrets
+1. Store SQL username 'AZURE_SQL_USERNAME' 
+2. Store SQL password 'AZURE_SQL_PASSWORD'
+
 Now we are ready to start the workflow [aspnetcore-deployment.yml](.github/workflows/aspnetcore-deployment.yml). This workflow has the following these steps
 
 - **IAC**
@@ -143,9 +147,9 @@ Navigate to the file [aspnetcore-deployment.yml](.github/workflows/aspnetcore-de
 This example using manual trigger, to start the workflow following these steps:
 
 - Under your repository name, click *Actions* tab.
-- In the left sidebar, click the workflow "aspnetcore.bicep".
+- In the left sidebar, click the workflow *aspnetcore-deployment*.
 - Above the list of workflow runs, select *Run workflow*.
-- Use the Branch dropdown to select the workflow's main branch, Click Run workflow.
+- Use the Branch dropdown to select the workflow's main branch, Click *Run workflow*.
 
 ![Bicep Workflow](/images/img06.png "Bicep Workflow")
 
