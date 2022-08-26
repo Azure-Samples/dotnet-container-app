@@ -23,8 +23,6 @@ jobs:
       # Checkout code
       - name: Checkout aspnetcoreiac
         uses: actions/checkout@v3
-        with:
-          path: src/aspnetcoreiac
       
       # Log into Azure
       - name: Login
@@ -44,16 +42,10 @@ jobs:
       #    deploymentName: 'gh-actions'
       #    parameters: rgName=${{ env.AZ_RG_NAME }} rgLocation=${{ env.AZ_RG_LOCATION }} acrName=${{ env.AZ_ACR_NAME }} clusterName=${{ env.AZ_AKS_NAME }} sqlserverName=${{ env.AZ_SQLSERVER_NAME }}
       #    failOnStdErr: false
-      - name: Az CLI
+      
+      - name: Running bicep file
         run: |
-          az --version
-          az deployment sub create --location ${{ env.AZ_RG_LOCATION }} --template-file src/aspnetcoreiac/main.bicep --parameters rgName=${{ env.AZ_RG_NAME }} rgLocation=${{ env.AZ_RG_LOCATION }} acrName=${{ env.AZ_ACR_NAME }} clusterName=${{ env.AZ_AKS_NAME }} sqlserverName=${{ env.AZ_SQLSERVER_NAME }}
-
-      #- name: Running bicep file
-      #  uses: azure/CLI@v1
-      #  with:
-      #    inlineScript: |
-      #      az deployment sub create --location ${{ env.AZ_RG_LOCATION }} --template-file $GITHUB_WORKSPACE/src/aspnetcoreiac/main.bicep --parameters rgName=${{ env.AZ_RG_NAME }} rgLocation=${{ env.AZ_RG_LOCATION }} acrName=${{ env.AZ_ACR_NAME }} clusterName=${{ env.AZ_AKS_NAME }} sqlserverName=${{ env.AZ_SQLSERVER_NAME }}
+          az deployment sub create --location ${{ env.AZ_RG_LOCATION }} --template-file src/aspnetcoreiac/main.bicep --parameters rgName=${{ env.AZ_RG_NAME }} rgLocation=${{ env.AZ_RG_LOCATION }} acrName=${{ env.AZ_ACR_NAME }} clusterName=${{ env.AZ_AKS_NAME }} sqlserverName=${{ env.AZ_SQLSERVER_NAME }} sqlAdminLogin=${{ secrets.AZURE_SQL_USERNAME }} sqlAdminPassword=${{ secrets.AZURE_SQL_PASSWORD }}
 
   build:
     needs: iac
@@ -123,10 +115,11 @@ jobs:
           echo Build Number = ${{ GITHUB.RUN_NUMBER }}
           urlApp=${{ env.ACR_URL }}/aspnetcorewebapp:${{ GITHUB.RUN_NUMBER }}
           urlApi=${{ env.ACR_URL }}/aspnetcorewebapi:${{ GITHUB.RUN_NUMBER }}
+          sqlConnString="Server=tcp:sqldotnetcontainerapp.database.windows.net,1433;Initial Catalog=TodoItem_DB;Persist Security Info=False;User ID=${{ secrets.AZURE_SQL_USERNAME }};Password=${{ secrets.AZURE_SQL_PASSWORD }};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
 
           sed -i "s|_ImageUrlApp_|$urlApp|g" src/kubernetes-containerapp.yaml
           sed -i "s|_ImageUrlApi_|$urlApi|g" src/kubernetes-containerapp.yaml
-          sed -i "s|_ConnString_|${{ secrets.SQL_CONNECTION }}|g" src/kubernetes-containerapp.yaml
+          sed -i "s|_ConnString_|$sqlConnString|g" src/kubernetes-containerapp.yaml
 
       - name: Upload Kubernetes files
         uses: actions/upload-artifact@v3.0.0
