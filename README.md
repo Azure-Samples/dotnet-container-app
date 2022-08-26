@@ -34,15 +34,13 @@ cd dotnet-container-app
 code .
 ```
 
-This application has the *.vscode/launch.json* file with the compound settings to run both projects (API and APP) at the same time
-
-![Compound Settings](/images/img02.png "Application")
-
 You will need to configure the ```Connection String``` in file */src/aspnetcorewebapi/appsettings.json*
 
 ![Connection String](/images/img10.png "Application")
 
+```
 Connection String example: *Data Source=(LocalDb)\\MSSQLLocalDB;Initial Catalog=TodoItem_DB;Integrated Security=SSPI;*
+```
 
 To run the application in debug mode, select the *Debug* menu and select the *aspnetcorewebapi & aspnetcorewebapp* option as shown in the image below
 
@@ -56,7 +54,7 @@ Another option to run application based on docker containers. This application u
 - **aspnetcorewebapi:** Rest APIs to communicate with SQL Server database (backend)
 - **aspnetcorewebapp:** ASP NET MVC application to communicate with API (frontend)
 
- In the root directory of the application we have the *DockerCompose.yml* file with all the necessary configurations to running the application using containers. To start run the command below.
+In the root directory of the application we have the *DockerCompose.yml* file with all the necessary configurations to running the application using containers. To start run the command below.
 
 ```sh
 docker-compose -f 'DockerCompose.yml' up --build -d
@@ -78,27 +76,17 @@ This bicep file will create the following resources in Azure.
 
 - **[Azure Monitor](https://docs.microsoft.com/en-us/azure/azure-monitor/overview)** helps you maximize the availability and performance of your applications and services. It delivers a comprehensive solution for collecting, analyzing, and acting on telemetry from your cloud and on-premises environments.
 
-First step is creating the Azure Resource Group
+First step is create a Service Principal identity to GitHub connect to Azure Subscription
 
 ```sh
-$rgName = 'rg-dotnet-containerapp'
-$location = 'eastus'
-
-# Authenticate to Azure
+# Login Azure
 az login
 
-# Ger subscription ID
+# Get subscription ID
 $subscriptionID = $(az account show --query id -o tsv)
 
-# Create resource group
-az group create --name $rgName --location $location
-```
-
-Next step is create a Service Principal identity to GitHub connect in this Azure resoure group
-
-```sh
 # Create Service Principal
-az ad sp create-for-rbac --name <Service Principal Name> --role contributor --scopes /subscriptions/$subscriptionID/resourceGroups/$rgName --sdk-auth 
+az ad sp create-for-rbac --name <Service Principal Name> --role contributor --scopes /subscriptions/$subscriptionID --sdk-auth 
 ```
 
 The command should output a JSON object similar to this:
@@ -129,34 +117,10 @@ Store the output JSON as the value of a GitHub Actions secret named 'AZURE_CREDE
 
 ![Add Secret](/images/img05.png "Add Secret")
 
-Now we are ready to start the workflow [aspnetcore-bicep.yml](.github/workflows/aspnetcore-bicep.yml) that executes the bicep file and creates all the resources that the application needs.
+Now we are ready to start the workflow [aspnetcore-deployment.yml](.github/workflows/aspnetcore-deployment.yml). This workflow has the following these steps
 
-- Navigate to the file [aspnetcore-bicep.yml](.github/workflows/aspnetcore-bicep.yml) and replace the variable values.
-  - AZ_ACR_NAME
-  - AZ_AKS_NAME
-  - AZ_SQLSERVER_NAME
-
-- Under your repository name, click *Actions* tab.
-- In the left sidebar, click the workflow "aspnetcore.bicep".
-- Above the list of workflow runs, select *Run workflow*.
-- Use the Branch dropdown to select the workflow's main branch, Click Run workflow.
-
-![Bicep Workflow](/images/img06.png "Bicep Workflow")
-
-After deployment, below resources will be created
-
-![Azure Resources](/images/img07.png "Azure Resources")
-
-Errors can occur when you use a resource provider you haven't already used in your Azure subscription. [Resolve errors for resource provider registration](https://docs.microsoft.com/en-us/azure/azure-resource-manager/troubleshooting/error-register-resource-provider?tabs=azure-cli).
-
-After our environment is available, we will need the database connection string, store the output value as a GitHub secret named SQL_CONNECTION.
-
-```
-az sql db show-connection-string --name TodoItem_DB --server <SQL Server Name> --client ado.net --output tsv
-```
-
-Now we can deploy our application to AKS by starting the workflow [aspnetcore.k8s.yml](.github/workflows/aspnetcore-k8s.yml). This workflow has the following steps
-
+- **IAC**
+  - Run the Bicep file to create environment
 - **Build**
   - Check out source code
   - Docker Login to ACR
@@ -169,7 +133,29 @@ Now we can deploy our application to AKS by starting the workflow [aspnetcore.k8
   - Create Secret
   - Deploy the application to AKS
 
-![Deploy](/images/img12.png "Deploy")
+Navigate to the file [aspnetcore-deployment.yml](.github/workflows/aspnetcore-deployment.yml) and replace the variable values.
+- AZ_RG_NAME
+- AZ_RG_LOCATION
+- AZ_ACR_NAME
+- AZ_AKS_NAME
+- AZ_SQLSERVER_NAME
+
+This example using manual trigger, to start the workflow following these steps:
+
+- Under your repository name, click *Actions* tab.
+- In the left sidebar, click the workflow "aspnetcore.bicep".
+- Above the list of workflow runs, select *Run workflow*.
+- Use the Branch dropdown to select the workflow's main branch, Click Run workflow.
+
+![Bicep Workflow](/images/img06.png "Bicep Workflow")
+
+Workflow result
+
+![Azure Resources](/images/img13.png "Azure Resources")
+
+After deployment, below resources will be created in your Azure subscription
+
+![Azure Resources](/images/img07.png "Azure Resources")
 
 After the workflow ends, our application will be available for use.
 
