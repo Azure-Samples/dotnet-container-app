@@ -10,6 +10,7 @@ on: workflow_dispatch
 
 env:
   AZ_RG_NAME: 'rg-dotnet-containerapp'
+  AZ_RG_LOCATION: 'eastus'
   AZ_ACR_NAME: 'acrdotnetcontainerapp'
   AZ_AKS_NAME: 'aksdotnetcontainerapp'
   AZ_SQLSERVER_NAME: 'sqldotnetcontainerapp'
@@ -35,12 +36,12 @@ jobs:
       - name: Deploy Template
         uses: Azure/arm-deploy@v1.0.8
         with:
-          scope: resourcegroup
-          resourceGroupName: ${{ env.AZ_RG_NAME }}
+          scope: subscription
+          region: ${{ env.AZ_RG_LOCATION }}
           template: src/aspnetcoreiac/main.bicep
           deploymentMode: Incremental
           deploymentName: 'gh-actions'
-          parameters: acrName=${{ env.AZ_ACR_NAME }} clusterName=${{ env.AZ_AKS_NAME }} sqlserverName=${{ env.AZ_SQLSERVER_NAME }}
+          parameters: rgName=${{ env.AZ_RG_NAME }} rgLocation=${{ env.AZ_RG_LOCATION }} acrName=${{ env.AZ_ACR_NAME }} clusterName=${{ env.AZ_AKS_NAME }} sqlserverName=${{ env.AZ_SQLSERVER_NAME }}
           failOnStdErr: false
   
   build:
