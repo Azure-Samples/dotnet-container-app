@@ -36,7 +36,7 @@ jobs:
       - name: Deploy Template
         uses: Azure/arm-deploy@v1.0.8
         with:
-          scope: subscription
+          scope: resourcegroup
           region: ${{ env.AZ_RG_LOCATION }}
           template: src/aspnetcoreiac/main.bicep
           deploymentMode: Incremental
