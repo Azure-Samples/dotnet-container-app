@@ -46,8 +46,6 @@ To run the application in debug mode, select the *Debug* menu and select the *as
 
 ![Running](/images/img03.png "Application")
 
-Links to: [Web App](https://localhost:6001/) / [Web Api](https://localhost:5001/)
-
 Another option to run application based on docker containers. This application user 3 containers as show bellow:
 
 - **aspnetcoredb:** SQL Server
