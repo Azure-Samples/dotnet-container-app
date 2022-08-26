@@ -33,18 +33,24 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       # Deploy Bicep file
-      - name: Deploy Template
-        uses: Azure/arm-deploy@v1.0.8
+      #- name: Deploy Template
+      #  uses: Azure/arm-deploy@v1.0.8
+      #  with:
+      #    scope: subscription
+      #    resourceGroupName: ${{ env.AZ_RG_NAME }}
+      #    region: ${{ env.AZ_RG_LOCATION }}
+      #    template: src/aspnetcoreiac/main.bicep
+      #    deploymentMode: Validate
+      #    deploymentName: 'gh-actions'
+      #    parameters: rgName=${{ env.AZ_RG_NAME }} rgLocation=${{ env.AZ_RG_LOCATION }} acrName=${{ env.AZ_ACR_NAME }} clusterName=${{ env.AZ_AKS_NAME }} sqlserverName=${{ env.AZ_SQLSERVER_NAME }}
+      #    failOnStdErr: false
+
+      - name: Running bicep file
+        uses: azure/CLI@v1
         with:
-          scope: subscription
-          resourceGroupName: ${{ env.AZ_RG_NAME }}
-          region: ${{ env.AZ_RG_LOCATION }}
-          template: src/aspnetcoreiac/main.bicep
-          deploymentMode: Validate
-          deploymentName: 'gh-actions'
-          parameters: rgName=${{ env.AZ_RG_NAME }} rgLocation=${{ env.AZ_RG_LOCATION }} acrName=${{ env.AZ_ACR_NAME }} clusterName=${{ env.AZ_AKS_NAME }} sqlserverName=${{ env.AZ_SQLSERVER_NAME }}
-          failOnStdErr: false
-  
+          inlineScript: |
+            az deployment sub create --location ${{ env.AZ_RG_LOCATION }} --template-file src/aspnetcoreiac/main.bicep --parameters rgName=${{ env.AZ_RG_NAME }} rgLocation=${{ env.AZ_RG_LOCATION }} acrName=${{ env.AZ_ACR_NAME }} clusterName=${{ env.AZ_AKS_NAME }} sqlserverName=${{ env.AZ_SQLSERVER_NAME }}
+
   build:
     needs: iac
     runs-on: ubuntu-latest
