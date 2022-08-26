@@ -23,8 +23,6 @@ jobs:
       # Checkout code
       - name: Checkout aspnetcoreiac
         uses: actions/checkout@v3
-        with:
-          path: src/aspnetcoreiac
       
       # Log into Azure
       - name: Login
