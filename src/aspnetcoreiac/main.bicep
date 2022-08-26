@@ -5,6 +5,9 @@ param rgLocation string
 param acrName string
 param clusterName string
 param sqlserverName string
+param sqlAdminLogin string
+@secure()
+param sqlAdminPassword string
 
 resource rgModule 'Microsoft.Resources/resourceGroups@2021-01-01' = {
   name: rgName
@@ -36,8 +39,8 @@ module sqlModule 'SQLServer.bicep' = {
   params: {
     sqlserverName: sqlserverName
     location: rgLocation
-    sqlAdministratorLogin: 'sqluser'
-    sqlAdministratorLoginPassword: '#P@ssw0rd1234#'
+    sqlAdministratorLogin: sqlAdminLogin
+    sqlAdministratorLoginPassword: sqlAdminPassword
     databaseName: 'TodoItem_DB'
   }
 }
