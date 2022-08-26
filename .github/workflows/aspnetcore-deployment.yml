@@ -37,6 +37,7 @@ jobs:
         uses: Azure/arm-deploy@v1.0.8
         with:
           scope: resourcegroup
+          resourceGroupName: ${{ env.AZ_RG_NAME }}
           region: ${{ env.AZ_RG_LOCATION }}
           template: src/aspnetcoreiac/main.bicep
           deploymentMode: Incremental
