@@ -29,6 +29,11 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+      
+      - name: Script
+        run : | 
+          ls -a
+          pwd
 
       # Deploy Bicep file
       #- name: Deploy Template
