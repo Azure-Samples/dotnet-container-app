@@ -32,8 +32,8 @@ jobs:
       
       - name: Script
         run : | 
-          ls -a
           pwd
+          ls -R
 
       # Deploy Bicep file
       #- name: Deploy Template
