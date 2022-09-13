@@ -2,11 +2,11 @@
 
 This .NET 6 example application to demonstrate the process of creating a container application and deploying it to Azure Kubernetes Services (AKS)
 
-![Application](/images/img01.png "Application")
+![Application](/docs/images/img01.png "Application")
 
 This is the application architecture diagram
 
-![Architecture Diagram](/images/img14.png "Architecture Diagram")
+![Architecture Diagram](/docs/images/img14.png "Architecture Diagram")
 
 The project is divided as follows:
 
@@ -40,7 +40,7 @@ code .
 
 You will need to configure the ```Connection String``` in file */src/aspnetcorewebapi/appsettings.json*
 
-![Connection String](/images/img10.png "Application")
+![Connection String](/docs/images/img10.png "Application")
 
 ```
 Connection String example: *Data Source=(LocalDb)\\MSSQLLocalDB;Initial Catalog=TodoItem_DB;Integrated Security=SSPI;*
@@ -48,7 +48,7 @@ Connection String example: *Data Source=(LocalDb)\\MSSQLLocalDB;Initial Catalog=
 
 To run the application in debug mode, select the *Debug* menu and select the *aspnetcorewebapi & aspnetcorewebapp* option as shown in the image below
 
-![Running](/images/img03.png "Application")
+![Running](/docs/images/img03.png "Application")
 
 Another option to run application based on docker containers. This application user 3 containers as show bellow:
 
@@ -62,7 +62,7 @@ In the root directory of the application we have the *DockerCompose.yml* file wi
 docker-compose -f 'DockerCompose.yml' up --build -d
 ```
 
-![Docker Compose](/images/img04.png "DockerCompose")
+![Docker Compose](/docs/images/img04.png "DockerCompose")
 
 ## Publish to Azure
 
@@ -117,7 +117,7 @@ Store the output JSON as the value of a GitHub Actions secret named 'AZURE_CREDE
 - Add the output JSON as secret value
 - Click *Add secret* button.
 
-![Add Secret](/images/img05.png "Add Secret")
+![Add Secret](/docs/images/img05.png "Add Secret")
 
 Create other two secrets
 1. Store SQL username 'AZURE_SQL_USERNAME' 
@@ -153,15 +153,15 @@ This example using manual trigger, to start the workflow following these steps:
 - Above the list of workflow runs, select *Run workflow*.
 - Use the Branch dropdown to select the workflow's main branch, Click *Run workflow*.
 
-![Bicep Workflow](/images/img06.png "Bicep Workflow")
+![Bicep Workflow](/docs/images/img06.png "Bicep Workflow")
 
 Workflow result
 
-![Azure Resources](/images/img13.png "Azure Resources")
+![Azure Resources](/docs/images/img13.png "Azure Resources")
 
 After deployment, below resources will be created in your Azure subscription
 
-![Azure Resources](/images/img07.png "Azure Resources")
+![Azure Resources](/docs/images/img07.png "Azure Resources")
 
 After the workflow ends, our application will be available for use.
 
@@ -171,7 +171,7 @@ After the workflow ends, our application will be available for use.
 - In the *Kubernetes resources* section of the sidebar, click *Services and ingresses*
 - Check the external IP for the *aspnetcorewebapp-svc* service
 
-![Kubernetes Services](/images/img09.png "Kubernetes Services")
+![Kubernetes Services](/docs/images/img09.png "Kubernetes Services")
 
 # Contributing
 
