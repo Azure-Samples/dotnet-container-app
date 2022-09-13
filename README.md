@@ -4,6 +4,10 @@ This .NET 6 example application to demonstrate the process of creating a contain
 
 ![Application](/images/img01.png "Application")
 
+This is the application architecture diagram
+
+![Architecture Diagram](/images/img14.png "Architecture Diagram")
+
 The project is divided as follows:
 
 - **src/aspnetcoreiac:** Bicep files for create Azure environment
