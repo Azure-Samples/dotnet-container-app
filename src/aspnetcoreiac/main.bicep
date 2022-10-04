@@ -33,6 +33,15 @@ module aksModule 'Kubernetes.bicep' = {
   }
 }
 
+module aksRoleAssigment 'AksRoleAssignments.bicep' = {
+  name: 'aksRoleAssigment'
+  scope: rgModule
+  params: {
+    acrName: acrName
+    aksPrincipalId: aksModule.outputs.principalId
+  }
+}
+
 module sqlModule 'SQLServer.bicep' = {
   name: 'sqlDeploy'
   scope: rgModule
