@@ -45,7 +45,7 @@ jobs:
           template: src/aspnetcoreiac/main.bicep
           deploymentMode: Validate
           deploymentName: 'gh-actions'
-          parameters: rgName=${{ env.AZ_RG_NAME }} rgLocation=${{ env.AZ_RG_LOCATION }} acrName=${{ env.AZ_ACR_NAME }} clusterName=${{ env.AZ_AKS_NAME }} sqlserverName=${{ env.AZ_SQLSERVER_NAME }}
+          parameters: rgName=${{ env.AZ_RG_NAME }} rgLocation=${{ env.AZ_RG_LOCATION }} acrName=${{ env.AZ_ACR_NAME }} clusterName=${{ env.AZ_AKS_NAME }} sqlserverName=${{ env.AZ_SQLSERVER_NAME }} sqlAdminLogin=${{ secrets.AZURE_SQL_USERNAME }} sqlAdminPassword=${{ secrets.AZURE_SQL_PASSWORD }}
           failOnStdErr: false
       
       #- name: Running bicep file
