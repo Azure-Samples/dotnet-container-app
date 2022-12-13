@@ -166,7 +166,7 @@ After deployment, below resources will be created in your Azure subscription
 After the workflow ends, our application will be available for use.
 
 - Log in Azure Portal
-- Select the resouce group *rg-dotnet-containerapp*
+- Select the resource group *rg-dotnet-containerapp*
 - Select the AKS cluster *Kubernetes Service Name*
 - In the *Kubernetes resources* section of the sidebar, click *Services and ingresses*
 - Check the external IP for the *aspnetcorewebapp-svc* service
