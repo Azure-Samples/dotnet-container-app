@@ -43,7 +43,7 @@ jobs:
 
       # Deploy Bicep file
       - name: Deploy Template
-        uses: Azure/arm-deploy@v1.0.8
+        uses: Azure/arm-deploy@v1
         with:
           resourceGroupName: ${{ env.AZ_RG_NAME }}
           region: ${{ env.AZ_RG_LOCATION }}
