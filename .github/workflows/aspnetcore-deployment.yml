@@ -9,7 +9,7 @@ on: workflow_dispatch
 #    branches: [ main ]
 
 env:
-  AZ_RG_NAME: 'rg-dotnetcontainerap'
+  AZ_RG_NAME: 'rg-dotnetcontainerapp'
   AZ_RG_LOCATION: 'eastus'
   AZ_ACR_NAME: 'acrdotnetcontainerapp'
   AZ_AKS_NAME: 'aksdotnetcontainerapp'
