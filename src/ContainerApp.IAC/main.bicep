@@ -8,8 +8,6 @@ param kvName string
 param loadTestName string
 param location string = resourceGroup().location
 
-var aksDev = toLower('${clusterName}-dev')
-
 module acrModule 'ContainerRegistry.bicep' = {
   name: 'acrDeploy'
   params: {
@@ -21,8 +19,8 @@ module acrModule 'ContainerRegistry.bicep' = {
 module aksModuleDev 'Kubernetes.bicep' = {
   name: 'aksDeployDev'
   params: {
-    clusterName: aksDev
-    dnsPrefix: aksDev
+    clusterName: clusterName
+    dnsPrefix: clusterName
     location: location
   }
 }
