@@ -96,7 +96,7 @@ jobs:
           password: ${{ env.ACR_PASSWORD }}
       
       - name: Build and push TodoApi image
-        uses: docker/build-push-action@v2.10.0
+        uses: docker/build-push-action@v3
         with:
           context: src/ContainerApp.TodoApi
           file: src/ContainerApp.TodoApi/Dockerfile
@@ -106,7 +106,7 @@ jobs:
           push: true
 
       - name: Build and push WeatherApi image
-        uses: docker/build-push-action@v2.10.0
+        uses: docker/build-push-action@v3
         with:
           context: src/ContainerApp.WeatherApi
           file: src/ContainerApp.WeatherApi/Dockerfile
@@ -116,7 +116,7 @@ jobs:
           push: true
           
       - name: Build and push ContainerApp.WebApp image
-        uses: docker/build-push-action@v2.10.0
+        uses: docker/build-push-action@v3
         with:
           context: src/ContainerApp.WebApp
           file: src/ContainerApp.WebApp/Dockerfile
