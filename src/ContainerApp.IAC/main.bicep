@@ -1,6 +1,9 @@
 param acrName string
 param clusterName string
 param sqlserverName string
+param sqlAdminLogin string
+@secure()
+param sqlAdminPassword string
 param kvName string
 param loadTestName string
 param location string = resourceGroup().location
@@ -33,30 +36,13 @@ module aksRoleAssigment 'AksRoleAssignments.bicep' = {
   }
 }
 
-module aksModulePrd 'Kubernetes.bicep' = {
-  name: 'aksDeployPrd'
-  params: {
-    clusterName: aksPrd
-    dnsPrefix: aksPrd
-    location: location
-  }
-}
-
-module aksRoleAssigmentPrd 'AksRoleAssignments.bicep' = {
-  name: 'aksRoleAssigmentPrd'
-  params: {
-    acrName: acrName
-    aksPrincipalId: aksModulePrd.outputs.principalId
-  }
-}
-
 module sqlModule 'SQLServer.bicep' = {
   name: 'sqlDeploy'
   params: {
     sqlserverName: sqlserverName
     location: location
-    sqlAdministratorLogin: 'leandro'
-    sqlAdministratorLoginPassword: '#P@ssw0rd1234#'
+    sqlAdministratorLogin: sqlAdminLogin
+    sqlAdministratorLoginPassword: sqlAdminPassword
     databaseName: 'TodoItem_DB'
   }
 }

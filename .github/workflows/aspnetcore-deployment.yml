@@ -14,6 +14,8 @@ env:
   AZ_ACR_NAME: 'acrdotnetcontainerapp'
   AZ_AKS_NAME: 'aksdotnetcontainerapp'
   AZ_SQLSERVER_NAME: 'sqldotnetcontainerapp'
+  AZ_KV_NAME: 'kv-container-app-demo'
+  AZ_LOADTEST_NAME: 'ltst-container-app-demo'
 
 jobs:
 
@@ -21,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Checkout code
-      - name: Checkout aspnetcoreiac
+      - name: Checkout
         uses: actions/checkout@v3
       
       # Log into Azure
@@ -29,25 +31,33 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+      
+      # Create Resource Group
+      - name: Create Resource Group
+        run: |
+          if [ $(az group exists --name ${{ env.AZ_RG_NAME }}) = false ]; then
+            az group create --name ${{ env.AZ_RG_NAME }} --location ${{ env.AZ_RG_LOCATION }} --debug
+          else
+              echo "Resource group already exists"
+          fi
 
       # Deploy Bicep file
       - name: Deploy Template
         uses: Azure/arm-deploy@v1.0.8
         with:
-          scope: subscription
           resourceGroupName: ${{ env.AZ_RG_NAME }}
           region: ${{ env.AZ_RG_LOCATION }}
-          template: src/aspnetcoreiac/main.bicep
+          template: src/ContainerApp.IAC/main.bicep
           deploymentMode: Incremental
           deploymentName: 'gh-actions'
-          parameters: rgName=${{ env.AZ_RG_NAME }} rgLocation=${{ env.AZ_RG_LOCATION }} acrName=${{ env.AZ_ACR_NAME }} clusterName=${{ env.AZ_AKS_NAME }} sqlserverName=${{ env.AZ_SQLSERVER_NAME }} sqlAdminLogin=${{ secrets.AZURE_SQL_USERNAME }} sqlAdminPassword=${{ secrets.AZURE_SQL_PASSWORD }}
+          parameters: acrName=${{ env.AZ_ACR_NAME }} clusterName=${{ env.AZ_AKS_NAME }} sqlserverName=${{ env.AZ_SQLSERVER_NAME }} sqlAdminLogin=${{ secrets.AZURE_SQL_USERNAME }} sqlAdminPassword=${{ secrets.AZURE_SQL_PASSWORD }} kvName=${{ env.AZ_KV_NAME }} loadTestName=${{ env.AZ_LOADTEST_NAME }}
           
   build:
     needs: iac
     runs-on: ubuntu-latest
     steps:
       # Checkout code
-      - name: Checkout aspnetcoreiac
+      - name: Checkout
         uses: actions/checkout@v3
       
       - name: Change Version variable
