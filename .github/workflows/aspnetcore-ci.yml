@@ -23,10 +23,10 @@ jobs:
         dotnet-version: 6.0.x
     
     - name: Restore
-      run: dotnet restore src/aspnetcore.sln
+      run: dotnet restore src/ContainerApp.sln
     
     - name: Build
-      run: dotnet build src/aspnetcore.sln --configuration ${{ env.CONFIGURATION }} --no-restore
+      run: dotnet build src/ContainerApp.sln --configuration ${{ env.CONFIGURATION }} --no-restore
     
     - name: Test
-      run: dotnet test src/aspnetcorewebapi.test/aspnetcorewebapi.test.csproj --configuration ${{ env.CONFIGURATION }} --no-build --verbosity normal --logger trx --results-directory TestResults
+      run: dotnet test src/ContainerApp.Test/ContainerApp.Test.csproj --configuration ${{ env.CONFIGURATION }} --no-build --verbosity normal --logger trx --results-directory TestResults
