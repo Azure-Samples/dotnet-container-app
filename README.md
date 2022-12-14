@@ -10,10 +10,11 @@ This is the application architecture diagram
 
 The project is divided as follows:
 
-- **src/aspnetcoreiac:** Bicep files for create Azure environment
-- **src/aspnetcorewebapi:** Rest APIs to communicate with database
-- **src/aspnetcorewebapp:** Web Application interact with rest API
-- **src/aspnetcorewebapi.test:** Unit Testing project
+- **src/ContainerApp.IAC:** Bicep files for create Azure environment
+- **src/ContainerApp.TodoApi:** TODO API to communicate with SQL Server database
+- **src/ContainerApp.WeatherApi:** WEATHER API simulates weather forecasts
+- **src/ContainerApp.WebApp:** Web Application interact with rest TODO API and
+- **src/ContainerApp.Test:** Unit Testing project
 
 ## Getting Started
 
@@ -50,13 +51,7 @@ To run the application in debug mode, select the *Debug* menu and select the *as
 
 ![Running](/docs/images/img03.png "Application")
 
-Another option to run application based on docker containers. This application user 3 containers as show bellow:
-
-- **aspnetcoredb:** SQL Server
-- **aspnetcorewebapi:** Rest APIs to communicate with SQL Server database (backend)
-- **aspnetcorewebapp:** ASP NET MVC application to communicate with API (frontend)
-
-In the root directory of the application we have the *DockerCompose.yml* file with all the necessary configurations to running the application using containers. To start run the command below.
+Another option to run application based on docker containers. In the root directory of the application we have the *DockerCompose.yml* file with all the necessary configurations to running the application using containers. To start run the command below.
 
 ```sh
 docker-compose -f 'DockerCompose.yml' up --build -d
