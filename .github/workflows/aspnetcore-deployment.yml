@@ -9,13 +9,13 @@ on: workflow_dispatch
 #    branches: [ main ]
 
 env:
-  AZ_RG_NAME: 'rg-dotnet-containerapp'
+  AZ_RG_NAME: 'rg-dotnetcontainerap'
   AZ_RG_LOCATION: 'eastus'
   AZ_ACR_NAME: 'acrdotnetcontainerapp'
   AZ_AKS_NAME: 'aksdotnetcontainerapp'
   AZ_SQLSERVER_NAME: 'sqldotnetcontainerapp'
-  AZ_KV_NAME: 'kv-container-app-demo'
-  AZ_LOADTEST_NAME: 'ltst-container-app-demo'
+  AZ_KV_NAME: 'kvdotnetcontainerap'
+  AZ_LOADTEST_NAME: 'ltstdotnetcontainerap'
 
 jobs:
 
