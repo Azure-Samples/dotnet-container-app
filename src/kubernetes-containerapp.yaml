@@ -1,11 +1,11 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: aspnetcorewebapp-svc
+  name: containerapp-webapp-svc
 spec:
   type: LoadBalancer
   selector:
-    app: aspnetcorewebapp
+    app: containerapp-webapp
     tier: frontend
   ports:
     - protocol: TCP
@@ -15,48 +15,48 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: aspnetcorewebapp-deploy
+  name: containerapp-webapp-deploy
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: aspnetcorewebapp
+      app: containerapp-webapp
       tier: frontend
   template:
     metadata:
       labels:
-        app: aspnetcorewebapp
+        app: containerapp-webapp
         tier: frontend
     spec:
       containers:
-        - name: aspnetcorewebapp
+        - name: containerapp-webapp
           image: "_ImageUrlApp_"
           env:
             - name: ApiAddress
-              value: "http://aspnetcorewebapi-svc.default.svc.cluster.local"
+              value: "http://containerapp-todoapi-svc.default.svc.cluster.local"
           ports:
             - name: http
               containerPort: 80
           resources:
             requests:
-              memory: "64Mi"
               cpu: "250m"
+              memory: "64Mi"
             limits:
-              memory: "128Mi"
               cpu: "500m"
-      imagePullSecrets:
-        - name: mysecret
+              memory: "128Mi"
+      #imagePullSecrets:
+      #  - name: mysecret
 ---
 kind: Service
 apiVersion: v1
 metadata:
-  name: aspnetcorewebapi-svc
+  name: containerapp-todoapi-svc
   annotations:
     service.beta.kubernetes.io/azure-load-balancer-internal: "true"
 spec:
   type: LoadBalancer
   selector:
-    app: aspnetcorewebapi
+    app: containerapp-todoapi
     tier: backend
   ports:
     - protocol: TCP
@@ -66,21 +66,26 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: aspnetcorewebapi-deploy
+  name: containerapp-todoapi-deploy
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: aspnetcorewebapi
+      app: containerapp-todoapi
       tier: backend
+  #strategy:
+  #  rollingUpdate:
+  #    maxSurge: 25%
+  #    maxUnavailable: 25%
+  #  type: RollingUpdate
   template:
     metadata:
       labels:
-        app: aspnetcorewebapi
+        app: containerapp-todoapi
         tier: backend
     spec:
       containers:
-        - name: aspnetcorewebapi
+        - name: containerapp-todoapi
           image: "_ImageUrlApi_"
           env:
             - name: MyDbContext
@@ -90,10 +95,38 @@ spec:
               containerPort: 80
           resources:
             requests:
-              memory: "64Mi"
               cpu: "250m"
+              memory: "64Mi"
             limits:
-              memory: "128Mi"
               cpu: "500m"
-      imagePullSecrets:
-        - name: mysecret
+              memory: "128Mi"
+      #imagePullSecrets:
+      #  - name: mysecret
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: containerapp-webapp-scaler
+  namespace: default
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: containerapp-webapp-deploy
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 20
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: containerapp-todoapi-scaler
+  namespace: default
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: containerapp-todoapi-deploy
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 20

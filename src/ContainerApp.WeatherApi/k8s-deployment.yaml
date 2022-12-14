@@ -1,0 +1,59 @@
+﻿kind: Service
+apiVersion: v1
+metadata:
+  name: containerapp-weatherapi-svc
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+spec:
+  type: LoadBalancer
+  selector:
+    app: containerapp-weatherapi
+    tier: backend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: containerapp-weatherapi-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: containerapp-weatherapi
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: containerapp-weatherapi
+        tier: backend
+    spec:
+      containers:
+        - name: containerapp-weatherapi
+          image: "_ImageUrlApi_"
+          ports:
+            - name: http
+              containerPort: 80
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "64Mi"
+            limits:
+              cpu: "500m"
+              memory: "128Mi"
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: containerapp-weatherapi-scaler
+  namespace: default
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: containerapp-weatherapi-deploy
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 20

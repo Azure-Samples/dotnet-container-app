@@ -1,0 +1,15 @@
+@using Microsoft.AspNetCore.Hosting
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment HostingEnvironment
+
+@{
+    ViewData["Title"] = "View Config";
+}
+
+<h2>App Information</h2>
+
+<ul>
+    <li><b>Machine Name:</b> @System.Environment.MachineName</li>
+    <li><b>Web Root Path:</b> @HostingEnvironment.WebRootPath</li>
+    <li><b>API Todo:</b> @ViewBag.ApiAddress</li>
+    <li><b>API Weather:</b> @ViewBag.WeatherApi</li>
+</ul>

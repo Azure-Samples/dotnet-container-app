@@ -1,0 +1,47 @@
+@model IEnumerable<TodoItemModel>
+
+@{
+    ViewData["Title"] = "Todo Items";
+}
+
+<h1>List</h1>
+
+<div>
+    <a asp-action="Create">Create</a>
+</div>
+
+@if (Model.Count() > 0)
+{
+    <table class="table table-sm table-striped table-bordered m-2">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Is Complete</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var r in Model)
+            {
+                <tr>
+                    <td>@r.Id</td>
+                    <td>@r.Name</td>
+                    <td>@r.IsComplete</td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new {  id=r.Id }) |
+                        @Html.ActionLink("Details", "Details", new {  id=r.Id }) |
+                        @Html.ActionLink("Delete", "Delete", new {  id=r.Id  })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <br>
+    <div class="alert alert-warning" role="alert">
+        Nenhum resultado encontrado!
+    </div>
+}
