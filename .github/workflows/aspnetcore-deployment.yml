@@ -109,7 +109,7 @@ jobs:
         uses: docker/build-push-action@v2.10.0
         with:
           context: src/ContainerApp.WeatherApi
-          file: ContainerApp.WeatherApi/Dockerfile
+          file: src/ContainerApp.WeatherApi/Dockerfile
           tags: |
             ${{ env.ACR_URL }}/containerapp.weatherapi:${{ GITHUB.RUN_NUMBER }}
             ${{ env.ACR_URL }}/containerapp.weatherapi:latest
