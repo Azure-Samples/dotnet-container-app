@@ -121,7 +121,7 @@ jobs:
           urlApp=${{ env.ACR_URL }}/containerapp.webapp:${{ GITHUB.RUN_NUMBER }}
           urlTodoApi=${{ env.ACR_URL }}/containerapp.todoapi:${{ GITHUB.RUN_NUMBER }}
           urlWeatherApi=${{ env.ACR_URL }}/containerapp.weatherapi:${{ GITHUB.RUN_NUMBER }}
-          sqlConnString="Server=tcp:sqldotnetcontainerapp.database.windows.net,1433;Initial Catalog=TodoItem_DB;Persist Security Info=False;User ID=${{ secrets.AZURE_SQL_USERNAME }};Password=${{ secrets.AZURE_SQL_PASSWORD }};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+          sqlConnString="Server=tcp:${{ env.AZ_SQLSERVER_NAME }}.database.windows.net,1433;Initial Catalog=TodoItem_DB;Persist Security Info=False;User ID=${{ secrets.AZURE_SQL_USERNAME }};Password=${{ secrets.AZURE_SQL_PASSWORD }};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
 
           echo URL APP = $urlApp
           echo URL TODO API = $urlTodoApi
