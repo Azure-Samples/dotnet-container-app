@@ -104,6 +104,16 @@ jobs:
             ${{ env.ACR_URL }}/containerapp.todoapi:${{ GITHUB.RUN_NUMBER }}
             ${{ env.ACR_URL }}/containerapp.todoapi:latest
           push: true
+
+      - name: Build and push WeatherApi image
+        uses: docker/build-push-action@v2.10.0
+        with:
+          context: src/ContainerApp.WeatherApi
+          file: ContainerApp.WeatherApi/Dockerfile
+          tags: |
+            ${{ env.ACR_URL }}/containerapp.weatherapi:${{ GITHUB.RUN_NUMBER }}
+            ${{ env.ACR_URL }}/containerapp.weatherapi:latest
+          push: true
           
       - name: Build and push ContainerApp.WebApp image
         uses: docker/build-push-action@v2.10.0
