@@ -73,6 +73,8 @@ This bicep file will create the following resources in Azure.
 
 - **[Azure Monitor](https://docs.microsoft.com/en-us/azure/azure-monitor/overview)** helps you maximize the availability and performance of your applications and services. It delivers a comprehensive solution for collecting, analyzing, and acting on telemetry from your cloud and on-premises environments.
 
+- **[Azure Key Vault](https://learn.microsoft.com/en-us/azure/key-vault/general/)** is a cloud service for securely storing and accessing secrets. A secret is anything that you want to tightly control access to, such as API keys, passwords, certificates, or cryptographic keys
+
 First step is create a Service Principal identity to GitHub connect to Azure Subscription
 
 ```sh
