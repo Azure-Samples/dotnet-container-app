@@ -9,7 +9,6 @@ param loadTestName string
 param location string = resourceGroup().location
 
 var aksDev = toLower('${clusterName}-dev')
-var aksPrd = toLower('${clusterName}-prd')
 
 module acrModule 'ContainerRegistry.bicep' = {
   name: 'acrDeploy'
