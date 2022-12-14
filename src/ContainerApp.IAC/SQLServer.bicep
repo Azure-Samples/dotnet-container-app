@@ -55,4 +55,4 @@ resource allowAllWindowsAzureIps 'Microsoft.Sql/servers/firewallRules@2021-11-01
   }
 }
 
-output connectionString string = 'Server=tcp:${sqlserverName}${environment().suffixes.sqlServerHostname},1433;Initial Catalog=${databaseName};Persist Security Info=False;User ID=${sqlAdministratorLogin};Password=${sqlAdministratorLoginPassword};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'
+//output connectionString string = 'Server=tcp:${sqlserverName}${environment().suffixes.sqlServerHostname},1433;Initial Catalog=${databaseName};Persist Security Info=False;User ID=${sqlAdministratorLogin};Password=${sqlAdministratorLoginPassword};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'

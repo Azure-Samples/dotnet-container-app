@@ -60,10 +60,10 @@ var secrets =  {
       secretName: 'Secret03'
       secretValue: 'Value03'
     }
-    {
-      secretName: 'ConnString'
-      secretValue: sqlModule.outputs.connectionString
-    }
+    //{
+    //  secretName: 'ConnString'
+    //  secretValue: sqlModule.outputs.connectionString
+    //}
   ]
 }
 
