@@ -142,6 +142,8 @@ Navigate to the file [aspnetcore-deployment.yml](.github/workflows/aspnetcore-de
 - AZ_ACR_NAME
 - AZ_AKS_NAME
 - AZ_SQLSERVER_NAME
+- AZ_KV_NAME
+- AZ_LOADTEST_NAME
 
 This example using manual trigger, to start the workflow following these steps:
 
