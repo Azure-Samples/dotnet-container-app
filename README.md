@@ -10,10 +10,11 @@ This is the application architecture diagram
 
 The project is divided as follows:
 
-- **src/aspnetcoreiac:** Bicep files for create Azure environment
-- **src/aspnetcorewebapi:** Rest APIs to communicate with database
-- **src/aspnetcorewebapp:** Web Application interact with rest API
-- **src/aspnetcorewebapi.test:** Unit Testing project
+- **src/ContainerApp.IAC:** Bicep files for create Azure environment
+- **src/ContainerApp.TodoApi:** TODO API to communicate with SQL Server database
+- **src/ContainerApp.WeatherApi:** WEATHER API simulates weather forecasts
+- **src/ContainerApp.WebApp:** Web Application interact with rest TODO API and
+- **src/ContainerApp.Test:** Unit Testing project
 
 ## Getting Started
 
@@ -50,13 +51,7 @@ To run the application in debug mode, select the *Debug* menu and select the *as
 
 ![Running](/docs/images/img03.png "Application")
 
-Another option to run application based on docker containers. This application user 3 containers as show bellow:
-
-- **aspnetcoredb:** SQL Server
-- **aspnetcorewebapi:** Rest APIs to communicate with SQL Server database (backend)
-- **aspnetcorewebapp:** ASP NET MVC application to communicate with API (frontend)
-
-In the root directory of the application we have the *DockerCompose.yml* file with all the necessary configurations to running the application using containers. To start run the command below.
+Another option to run application based on docker containers. In the root directory of the application we have the *DockerCompose.yml* file with all the necessary configurations to running the application using containers. To start run the command below.
 
 ```sh
 docker-compose -f 'DockerCompose.yml' up --build -d
@@ -77,6 +72,8 @@ This bicep file will create the following resources in Azure.
 - **[SQL Server Database](https://docs.microsoft.com/en-us/azure/azure-sql/azure-sql-iaas-vs-paas-what-is-overview?view=azuresql)** is a relational database-as-a-service (DBaaS) hosted in Azure that falls into the industry category of Platform-as-a-Service (PaaS).
 
 - **[Azure Monitor](https://docs.microsoft.com/en-us/azure/azure-monitor/overview)** helps you maximize the availability and performance of your applications and services. It delivers a comprehensive solution for collecting, analyzing, and acting on telemetry from your cloud and on-premises environments.
+
+- **[Azure Key Vault](https://learn.microsoft.com/en-us/azure/key-vault/general/)** is a cloud service for securely storing and accessing secrets. A secret is anything that you want to tightly control access to, such as API keys, passwords, certificates, or cryptographic keys
 
 First step is create a Service Principal identity to GitHub connect to Azure Subscription
 
@@ -145,6 +142,8 @@ Navigate to the file [aspnetcore-deployment.yml](.github/workflows/aspnetcore-de
 - AZ_ACR_NAME
 - AZ_AKS_NAME
 - AZ_SQLSERVER_NAME
+- AZ_KV_NAME
+- AZ_LOADTEST_NAME
 
 This example using manual trigger, to start the workflow following these steps:
 

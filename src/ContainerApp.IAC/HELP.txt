@@ -1,0 +1,30 @@
+# Comandos para serem executados localmente
+
+az login --use-device-code
+
+az account list -o table
+
+az account set --subscription <subscriptionId>
+
+az account list-locations -o table
+
+az vm list-sizes --location "brazilsouth"
+
+$rgName = 'rg-ContainerApp'
+$location ='brazilsouth'
+$acrName = 'crcontainerapp'
+$aksName = 'aks-containerapp'
+$clusterName = 'akstesteleandro'
+$sqlserverName = 'sqlserverteste'
+$kvName = 'kvteste'
+
+az group create --name $rgName --location $location
+
+az group list -o table
+
+# Testing
+az bicep build --file .\aspnetcoreiaac\main.bicep
+
+# Running
+az deployment group create --resource-group $rgName --template-file .\aspnetcoreiaac\main.bicep --parameters acrName=$acrName clusterName=$clusterName sqlserverName=$sqlserverName kvName=$kvName
+

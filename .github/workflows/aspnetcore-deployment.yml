@@ -9,11 +9,13 @@ on: workflow_dispatch
 #    branches: [ main ]
 
 env:
-  AZ_RG_NAME: 'rg-dotnet-containerapp'
+  AZ_RG_NAME: 'rg-dotnetcontainerapp'
   AZ_RG_LOCATION: 'eastus'
   AZ_ACR_NAME: 'acrdotnetcontainerapp'
   AZ_AKS_NAME: 'aksdotnetcontainerapp'
   AZ_SQLSERVER_NAME: 'sqldotnetcontainerapp'
+  AZ_KV_NAME: 'kvdotnetcontainerap'
+  AZ_LOADTEST_NAME: 'ltstdotnetcontainerap'
 
 jobs:
 
@@ -21,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Checkout code
-      - name: Checkout aspnetcoreiac
+      - name: Checkout
         uses: actions/checkout@v3
       
       # Log into Azure
@@ -29,31 +31,39 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+      
+      # Create Resource Group
+      - name: Create Resource Group
+        run: |
+          if [ $(az group exists --name ${{ env.AZ_RG_NAME }}) = false ]; then
+            az group create --name ${{ env.AZ_RG_NAME }} --location ${{ env.AZ_RG_LOCATION }}
+          else
+              echo "Resource group already exists"
+          fi
 
       # Deploy Bicep file
       - name: Deploy Template
-        uses: Azure/arm-deploy@v1.0.8
+        uses: Azure/arm-deploy@v1
         with:
-          scope: subscription
           resourceGroupName: ${{ env.AZ_RG_NAME }}
           region: ${{ env.AZ_RG_LOCATION }}
-          template: src/aspnetcoreiac/main.bicep
+          template: src/ContainerApp.IAC/main.bicep
           deploymentMode: Incremental
           deploymentName: 'gh-actions'
-          parameters: rgName=${{ env.AZ_RG_NAME }} rgLocation=${{ env.AZ_RG_LOCATION }} acrName=${{ env.AZ_ACR_NAME }} clusterName=${{ env.AZ_AKS_NAME }} sqlserverName=${{ env.AZ_SQLSERVER_NAME }} sqlAdminLogin=${{ secrets.AZURE_SQL_USERNAME }} sqlAdminPassword=${{ secrets.AZURE_SQL_PASSWORD }}
+          parameters: acrName=${{ env.AZ_ACR_NAME }} clusterName=${{ env.AZ_AKS_NAME }} sqlserverName=${{ env.AZ_SQLSERVER_NAME }} sqlAdminLogin=${{ secrets.AZURE_SQL_USERNAME }} sqlAdminPassword=${{ secrets.AZURE_SQL_PASSWORD }} kvName=${{ env.AZ_KV_NAME }} loadTestName=${{ env.AZ_LOADTEST_NAME }}
           
   build:
     needs: iac
     runs-on: ubuntu-latest
     steps:
       # Checkout code
-      - name: Checkout aspnetcoreiac
+      - name: Checkout
         uses: actions/checkout@v3
       
       - name: Change Version variable
         uses: microsoft/variable-substitution@v1 
         with:
-          files: 'src/aspnetcorewebapp/appsettings.json'
+          files: 'src/ContainerApp.WebApp/appsettings.json'
         env:
           Version: ${{ GITHUB.RUN_NUMBER }}
       
@@ -85,42 +95,66 @@ jobs:
           username: ${{ env.ACR_LOGIN }}
           password: ${{ env.ACR_PASSWORD }}
       
-      - name: Build and push aspnetcorewebapi image
-        uses: docker/build-push-action@v2.10.0
+      - name: Build and push TodoApi image
+        uses: docker/build-push-action@v3
         with:
-          context: src/aspnetcorewebapi
-          file: src/aspnetcorewebapi/Dockerfile
+          context: src/ContainerApp.TodoApi
+          file: src/ContainerApp.TodoApi/Dockerfile
           tags: |
-            ${{ env.ACR_URL }}/aspnetcorewebapi:${{ GITHUB.RUN_NUMBER }}
-            ${{ env.ACR_URL }}/aspnetcorewebapi:latest
+            ${{ env.ACR_URL }}/containerapp.todoapi:${{ GITHUB.RUN_NUMBER }}
+            ${{ env.ACR_URL }}/containerapp.todoapi:latest
+          push: true
+
+      - name: Build and push WeatherApi image
+        uses: docker/build-push-action@v3
+        with:
+          context: src/ContainerApp.WeatherApi
+          file: src/ContainerApp.WeatherApi/Dockerfile
+          tags: |
+            ${{ env.ACR_URL }}/containerapp.weatherapi:${{ GITHUB.RUN_NUMBER }}
+            ${{ env.ACR_URL }}/containerapp.weatherapi:latest
           push: true
           
-      - name: Build and push aspnetcorewebapp image
-        uses: docker/build-push-action@v2.10.0
+      - name: Build and push ContainerApp.WebApp image
+        uses: docker/build-push-action@v3
         with:
-          context: src/aspnetcorewebapp
-          file: src/aspnetcorewebapp/Dockerfile
+          context: src/ContainerApp.WebApp
+          file: src/ContainerApp.WebApp/Dockerfile
           tags: | 
-            ${{ env.ACR_URL }}/aspnetcorewebapp:${{ GITHUB.RUN_NUMBER }}
-            ${{ env.ACR_URL }}/aspnetcorewebapp:latest
+            ${{ env.ACR_URL }}/containerapp.webapp:${{ GITHUB.RUN_NUMBER }}
+            ${{ env.ACR_URL }}/containerapp.webapp:latest
           push: true
       
       - name: Replace variables
         run: |
           echo Build Number = ${{ GITHUB.RUN_NUMBER }}
-          urlApp=${{ env.ACR_URL }}/aspnetcorewebapp:${{ GITHUB.RUN_NUMBER }}
-          urlApi=${{ env.ACR_URL }}/aspnetcorewebapi:${{ GITHUB.RUN_NUMBER }}
-          sqlConnString="Server=tcp:sqldotnetcontainerapp.database.windows.net,1433;Initial Catalog=TodoItem_DB;Persist Security Info=False;User ID=${{ secrets.AZURE_SQL_USERNAME }};Password=${{ secrets.AZURE_SQL_PASSWORD }};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+          urlApp=${{ env.ACR_URL }}/containerapp.webapp:${{ GITHUB.RUN_NUMBER }}
+          urlTodoApi=${{ env.ACR_URL }}/containerapp.todoapi:${{ GITHUB.RUN_NUMBER }}
+          urlWeatherApi=${{ env.ACR_URL }}/containerapp.weatherapi:${{ GITHUB.RUN_NUMBER }}
+          sqlConnString="Server=tcp:${{ env.AZ_SQLSERVER_NAME }}.database.windows.net,1433;Initial Catalog=TodoItem_DB;Persist Security Info=False;User ID=${{ secrets.AZURE_SQL_USERNAME }};Password=${{ secrets.AZURE_SQL_PASSWORD }};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
 
-          sed -i "s|_ImageUrlApp_|$urlApp|g" src/kubernetes-containerapp.yaml
-          sed -i "s|_ImageUrlApi_|$urlApi|g" src/kubernetes-containerapp.yaml
-          sed -i "s|_ConnString_|$sqlConnString|g" src/kubernetes-containerapp.yaml
+          echo URL APP = $urlApp
+          echo URL TODO API = $urlTodoApi
+          echo URL WEATHER API = $urlWeatherApi
+
+          echo "*** Replace ContainerApp.WebApp/k8s-deployment.yaml ***"
+          sed -i "s|_ImageUrlApp_|$urlApp|g" src/ContainerApp.WebApp/k8s-deployment.yaml
+
+          echo "*** Replace ContainerApp.TodoApi/k8s-deployment.yaml ***"
+          sed -i "s|_ImageUrlApi_|$urlTodoApi|g" src/ContainerApp.TodoApi/k8s-deployment.yaml
+          sed -i "s|_ConnString_|$sqlConnString|g" src/ContainerApp.TodoApi/k8s-deployment.yaml
+
+          echo "*** Replace ContainerApp.WeatherApi/k8s-deployment.yaml ***"
+          sed -i "s|_ImageUrlApi_|$urlWeatherApi|g" src/ContainerApp.WeatherApi/k8s-deployment.yaml
 
       - name: Upload Kubernetes files
         uses: actions/upload-artifact@v3.0.0
         with:
           name: k8s
-          path: src/kubernetes-containerapp.yaml
+          path: |
+            src/ContainerApp.WebApp/k8s-deployment.yaml
+            src/ContainerApp.TodoApi/k8s-deployment.yaml
+            src/ContainerApp.WeatherApi/k8s-deployment.yaml
         
   release-to-dev:
     needs: build
@@ -138,22 +172,6 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-      
-      # Setup ACR variables
-      - name: Set the ACR values
-        id: setup-variables
-        run: |
-          url_acr=$(az acr show -n ${{ env.AZ_ACR_NAME }} --query loginServer --output tsv)
-          login_acr=$(az acr credential show -n ${{ env.AZ_ACR_NAME }} --query username --output tsv)
-          password_acr=$(az acr credential show -n ${{ env.AZ_ACR_NAME }} --query passwords[0].value --output tsv)
-
-          echo "::add-mask::$url_acr"
-          echo "::add-mask::$login_acr"
-          echo "::add-mask::$password_acr"
-
-          echo "ACR_URL=$url_acr" >> $GITHUB_ENV
-          echo "ACR_LOGIN=$login_acr" >> $GITHUB_ENV
-          echo "ACR_PASSWORD=$password_acr" >> $GITHUB_ENV
 
       # Set the target Azure Kubernetes Service (AKS) cluster. 
       - name: Deploy set context
@@ -162,22 +180,13 @@ jobs:
           creds: '${{ secrets.AZURE_CREDENTIALS }}'
           cluster-name: ${{ env.AZ_AKS_NAME }}
           resource-group: ${{ env.AZ_RG_NAME }}
-      
-      # Create image pull secret for ACR
-      - name: Create k8s secret
-        uses: azure/k8s-create-secret@v1
-        with:
-          container-registry-url: ${{ env.ACR_URL }}
-          container-registry-username: ${{ env.ACR_LOGIN }}
-          container-registry-password:  ${{ env.ACR_PASSWORD }}
-          secret-name: mysecret
-          namespace: default
-          arguments: --force true
 
       # Deploy app to AKS
       - name: Deploy to k8s
         uses: azure/k8s-deploy@v1
         with:
-          manifests: my-app-artifact/kubernetes-containerapp.yaml
-          imagepullsecrets: mysecret
           namespace: default
+          manifests: |
+            my-app-artifact/ContainerApp.WebApp/k8s-deployment.yaml
+            my-app-artifact/ContainerApp.TodoApi/k8s-deployment.yaml
+            my-app-artifact/ContainerApp.WeatherApi/k8s-deployment.yaml

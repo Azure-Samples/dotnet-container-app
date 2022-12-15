@@ -1,36 +1,47 @@
 version: '3.6'
 
 services:
-  aspnetcoreapp:
-    container_name: aspnetcorewebapp
-    image: aspnetcorewebapp
+  containerapp-webapp:
+    container_name: containerapp-webapp
+    image: containerapp-webapp
     build:
-      context: aspnetcorewebapp
+      context: containerapp.webapp
       dockerfile: Dockerfile
     environment:
-      - ApiAddress=http://aspnetcorewebapi
+      - ApiAddress=http://containerapp-todoapi
+      - WeatherApi=http://containerapp-weatherapi
     ports:
       - 7171:80
     links:
-      - aspnetcoreapi
+      - containerapp-todoapi
+      - containerapp-weatherapi
     depends_on:
-      - aspnetcoreapi
-  aspnetcoreapi:
-    container_name: aspnetcorewebapi
-    image: aspnetcorewebapi
+      - containerapp-todoapi
+      - containerapp-weatherapi
+  containerapp-todoapi:
+    container_name: containerapp-todoapi
+    image: containerapp-todoapi
     links:
-      - sql-server-db
+      - containerapp-sqlserverdb
     depends_on:
-      - sql-server-db
+      - containerapp-sqlserverdb
     build:
-      context: aspnetcorewebapi
+      context: containerapp.todoapi
       dockerfile: Dockerfile
     ports:
       - 7272:80
     environment:
-      - MyDbContext=Server=aspnetcoredb;Database=TodoItem_DB;User Id=sa;Password=P@ssw0rd;
-  sql-server-db:
-    container_name: aspnetcoredb
+      - MyDbContext=Server=containerapp-sqlserverdb;Database=TodoItem_DB;User Id=sa;Password=P@ssw0rd;
+  containerapp-weatherapi:
+    container_name: containerapp-weatherapi
+    image: containerapp-weatherapi
+    build:
+      context: containerapp.weatherapi
+      dockerfile: Dockerfile
+    ports:
+      - 7373:80
+  containerapp-sqlserverdb:
+    container_name: containerapp-sqlserverdb
     image: mcr.microsoft.com/mssql/server:2017-latest-ubuntu
     ports:
       - "3333:1433"

@@ -1,0 +1,62 @@
+﻿kind: Service
+apiVersion: v1
+metadata:
+  name: containerapp-webapp-svc
+spec:
+  type: LoadBalancer
+  selector:
+    app: containerapp-webapp
+    tier: frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: containerapp-webapp-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: containerapp-webapp
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        app: containerapp-webapp
+        tier: frontend
+    spec:
+      containers:
+        - name: containerapp-webapp
+          image: "_ImageUrlApp_"
+          env:
+            - name: ApiAddress
+              value: "http://containerapp-todoapi-svc.default.svc.cluster.local"
+            - name: WeatherApi
+              value: "http://containerapp-weatherapi-svc.default.svc.cluster.local"
+          ports:
+            - name: http
+              containerPort: 80
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "64Mi"
+            limits:
+              cpu: "500m"
+              memory: "128Mi"
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: containerapp-webapp-scaler
+  namespace: default
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: containerapp-webapp-deploy
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 20

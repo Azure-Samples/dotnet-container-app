@@ -5,14 +5,14 @@
             // Use IntelliSense to find out which attributes exist for C# debugging
             // Use hover for the description of the existing attributes
             // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
-            "name": "aspnetcorewebapp",
+            "name": "ContainerApp.TodoApi",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "buildApp",
+            "preLaunchTask": "buildTodoApi",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/src/aspnetcorewebapp/bin/Debug/net6.0/aspnetcorewebapp.dll",
+            "program": "${workspaceFolder}/src/ContainerApp.TodoApi/bin/Debug/net6.0/ContainerApp.TodoApi.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/src/aspnetcorewebapp",
+            "cwd": "${workspaceFolder}/src/ContainerApp.TodoApi",
             "stopAtEntry": false,
             // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
             "serverReadyAction": {
@@ -30,14 +30,39 @@
             // Use IntelliSense to find out which attributes exist for C# debugging
             // Use hover for the description of the existing attributes
             // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
-            "name": "aspnetcorewebapi",
+            "name": "ContainerApp.WeatherApi",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "buildApi",
+            "preLaunchTask": "buildWeatherApi",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/src/aspnetcorewebapi/bin/Debug/net6.0/aspnetcorewebapi.dll",
+            "program": "${workspaceFolder}/src/ContainerApp.WeatherApi/bin/Debug/net6.0/ContainerApp.WeatherApi.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/src/aspnetcorewebapi",
+            "cwd": "${workspaceFolder}/src/ContainerApp.WeatherApi",
+            "stopAtEntry": false,
+            // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}"
+            }
+        },
+        {
+            // Use IntelliSense to find out which attributes exist for C# debugging
+            // Use hover for the description of the existing attributes
+            // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
+            "name": "ContainerApp.WebApp",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "buildWebApp",
+            // If you have changed target frameworks, make sure to update the program path.
+            "program": "${workspaceFolder}/src/ContainerApp.WebApp/bin/Debug/net6.0/ContainerApp.WebApp.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/src/ContainerApp.WebApp",
             "stopAtEntry": false,
             // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
             "serverReadyAction": {
@@ -59,10 +84,11 @@
     ],
     "compounds": [
         {
-            "name": "aspnetcorewebapi & aspnetcorewebapp",
+            "name": "All Projects",
             "configurations": [
-                "aspnetcorewebapi",
-                "aspnetcorewebapp"
+                "ContainerApp.WeatherApi",
+                "ContainerApp.TodoApi",
+                "ContainerApp.WebApp"
             ]
         }
     ]
