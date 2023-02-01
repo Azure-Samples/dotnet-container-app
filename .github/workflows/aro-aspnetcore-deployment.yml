@@ -1,4 +1,4 @@
-name: aspnetcore.deployment
+name: aro-aspnetcore.deployment
 
 on: workflow_dispatch
 

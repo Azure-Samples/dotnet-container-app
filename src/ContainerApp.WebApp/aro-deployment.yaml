@@ -1,0 +1,63 @@
+﻿kind: Service
+apiVersion: v1
+metadata:
+  name: containerapp-webapp-svc
+spec:
+  type: ClusterIP
+  selector:
+    app: containerapp-webapp
+    tier: frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: containerapp-webapp-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: containerapp-webapp
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        app: containerapp-webapp
+        tier: frontend
+    spec:
+      containers:
+        - name: containerapp-webapp
+          image: "crcontainerappdemo.azurecr.io/containerapp.webapp:957"
+          env:
+            - name: ApiAddress
+              value: "http://containerapp-todoapi-svc.default.svc.cluster.local"
+            - name: WeatherApi
+              value: "http://containerapp-weatherapi-svc.default.svc.cluster.local"
+          ports:
+            - name: http
+              containerPort: 80
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "64Mi"
+            limits:
+              cpu: "500m"
+              memory: "128Mi"
+      imagePullSecrets:
+        - name: acr-secret
+---
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: containerapp-webapp
+  namespace: default
+spec:
+  path: /
+  to:
+    kind: Service
+    name: containerapp-webapp-svc
+  port:
+    targetPort: 80

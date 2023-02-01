@@ -1,5 +1,10 @@
 param acrName string
 param clusterName string
+param aadClientId string
+@secure()
+param aadClientSecret string
+param aadObjectId string
+param rpObjectId string
 param sqlserverName string
 param sqlAdminLogin string
 @secure()
@@ -8,7 +13,7 @@ param kvName string
 param loadTestName string
 param location string = resourceGroup().location
 
-module acrModule 'ContainerRegistry.bicep' = {
+module acrModule 'Modules/ContainerRegistry.bicep' = {
   name: 'acrDeploy'
   params: {
     acrName: acrName
@@ -16,24 +21,20 @@ module acrModule 'ContainerRegistry.bicep' = {
   }
 }
 
-module aksModuleDev 'Kubernetes.bicep' = {
-  name: 'aksDeployDev'
+module aroModuleDev 'Modules/OpenShift.bicep' = {
+  name: 'aroDeployDev'
   params: {
     clusterName: clusterName
-    dnsPrefix: clusterName
+    domain: clusterName
     location: location
+    aadClientId: aadClientId
+    aadClientSecret: aadClientSecret
+    aadObjectId: aadObjectId
+    rpObjectId: rpObjectId
   }
 }
 
-module aksRoleAssigment 'AksRoleAssignments.bicep' = {
-  name: 'aksRoleAssigmentDev'
-  params: {
-    acrName: acrName
-    aksPrincipalId: aksModuleDev.outputs.principalId
-  }
-}
-
-module sqlModule 'SQLServer.bicep' = {
+module sqlModule 'Modules/SQLServer.bicep' = {
   name: 'sqlDeploy'
   params: {
     sqlserverName: sqlserverName
@@ -65,7 +66,7 @@ var secrets =  {
   ]
 }
 
-module keyVaultModule 'KeyVault.bicep' = {
+module keyVaultModule 'Modules/KeyVault.bicep' = {
   name: 'keyVaultDeploy'
   params: {
     keyVaultName: kvName
@@ -75,7 +76,7 @@ module keyVaultModule 'KeyVault.bicep' = {
   }
 }
 
-module loadTestModule 'LoadTest.bicep' = {
+module loadTestModule 'Modules/LoadTest.bicep' = {
   name: 'loadTestDeploy'
   params:{
     name: loadTestName
