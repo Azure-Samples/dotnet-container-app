@@ -136,6 +136,7 @@ resource clusterName_resource 'Microsoft.RedHatOpenShift/OpenShiftClusters@2020-
   properties: {
     clusterProfile: {
       domain: domain
+      #disable-next-line use-resource-id-functions
       resourceGroupId: resourceGroupId
     }
     networkProfile: {
