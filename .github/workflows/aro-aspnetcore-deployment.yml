@@ -195,10 +195,11 @@ jobs:
         uses: redhat-actions/oc-login@v1
         with:
           openshift_server_url: ${{ env.ARO_API_SERVER }}
-          openshift_token: ${{ env.ARO_API_PASS }}
+          openshift_username: 'kubeadmin'
+          openshift_password: ${{ secrets.ARO_API_PASS }}
+          #openshift_token: ${{ env.ARO_API_PASS }}
           insecure_skip_tls_verify: true
           namespace: 'default'
-
       
       # # Set the target Azure Kubernetes Service (AKS) cluster. 
       # - name: Deploy set context
