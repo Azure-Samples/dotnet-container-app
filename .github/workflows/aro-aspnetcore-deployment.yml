@@ -42,15 +42,15 @@ jobs:
           fi
 
       # Deploy Bicep file
-      - name: Deploy Template
-        uses: Azure/arm-deploy@v1
-        with:
-          resourceGroupName: ${{ env.AZ_RG_NAME }}
-          region: ${{ env.AZ_RG_LOCATION }}
-          template: src/ContainerApp.IAC/aro.bicep
-          deploymentMode: Incremental
-          deploymentName: 'gh-actions'
-          parameters: acrName=${{ env.AZ_ACR_NAME }} clusterName=${{ env.AZ_ARO_NAME }} aadClientId=${{ secrets.ARO_CLIENT_ID }} aadClientSecret=${{ secrets.ARO_CLIENT_SECRET }} aadObjectId=${{ secrets.ARO_AAD_OBJECT_ID }} rpObjectId=${{ secrets.ARO_RP_OBJECT_ID }} sqlserverName=${{ env.AZ_SQLSERVER_NAME }} sqlAdminLogin=${{ secrets.AZURE_SQL_USERNAME }} sqlAdminPassword=${{ secrets.AZURE_SQL_PASSWORD }} kvName=${{ env.AZ_KV_NAME }} loadTestName=${{ env.AZ_LOADTEST_NAME }}
+      #- name: Deploy Template
+      #  uses: Azure/arm-deploy@v1
+      #  with:
+      #    resourceGroupName: ${{ env.AZ_RG_NAME }}
+      #    region: ${{ env.AZ_RG_LOCATION }}
+      #    template: src/ContainerApp.IAC/aro.bicep
+      #    deploymentMode: Incremental
+      #    deploymentName: 'gh-actions'
+      #    parameters: acrName=${{ env.AZ_ACR_NAME }} clusterName=${{ env.AZ_ARO_NAME }} aadClientId=${{ secrets.ARO_CLIENT_ID }} aadClientSecret=${{ secrets.ARO_CLIENT_SECRET }} aadObjectId=${{ secrets.ARO_AAD_OBJECT_ID }} rpObjectId=${{ secrets.ARO_RP_OBJECT_ID }} sqlserverName=${{ env.AZ_SQLSERVER_NAME }} sqlAdminLogin=${{ secrets.AZURE_SQL_USERNAME }} sqlAdminPassword=${{ secrets.AZURE_SQL_PASSWORD }} kvName=${{ env.AZ_KV_NAME }} loadTestName=${{ env.AZ_LOADTEST_NAME }}
           
   build:
     needs: iac
