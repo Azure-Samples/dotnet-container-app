@@ -1,0 +1,61 @@
+﻿kind: Service
+apiVersion: v1
+metadata:
+  name: containerapp-todoapi-svc
+spec:
+  type: ClusterIP
+  selector:
+    app: containerapp-todoapi
+    tier: backend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: containerapp-todoapi-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: containerapp-todoapi
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: containerapp-todoapi
+        tier: backend
+    spec:
+      containers:
+        - name: containerapp-todoapi
+          image: "_ImageUrlApi_"
+          env:
+            - name: MyDbContext
+              value: "_ConnString_"
+          ports:
+            - name: http
+              containerPort: 80
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "64Mi"
+            limits:
+              cpu: "500m"
+              memory: "128Mi"
+      imagePullSecrets:
+        - name: acr-secret
+---
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: containerapp-todoapi
+  namespace: default
+spec:
+  path: /
+  to:
+    kind: Service
+    name: containerapp-todoapi-svc
+  port:
+    targetPort: 80
