@@ -136,14 +136,14 @@ jobs:
           echo URL TODO API = $urlTodoApi
           echo URL WEATHER API = $urlWeatherApi
 
-          echo "*** Replace ContainerApp.WebApp/k8s-deployment.yaml ***"
+          echo "*** Replace ContainerApp.WebApp/aro-deployment.yaml ***"
           sed -i "s|_ImageUrlApp_|$urlApp|g" src/ContainerApp.WebApp/aro-deployment.yaml
 
-          echo "*** Replace ContainerApp.TodoApi/k8s-deployment.yaml ***"
+          echo "*** Replace ContainerApp.TodoApi/aro-deployment.yaml ***"
           sed -i "s|_ImageUrlApi_|$urlTodoApi|g" src/ContainerApp.TodoApi/aro-deployment.yaml
           sed -i "s|_ConnString_|$sqlConnString|g" src/ContainerApp.TodoApi/aro-deployment.yaml
 
-          echo "*** Replace ContainerApp.WeatherApi/k8s-deployment.yaml ***"
+          echo "*** Replace ContainerApp.WeatherApi/aro-deployment.yaml ***"
           sed -i "s|_ImageUrlApi_|$urlWeatherApi|g" src/ContainerApp.WeatherApi/aro-deployment.yaml
 
       - name: Upload Kubernetes files
