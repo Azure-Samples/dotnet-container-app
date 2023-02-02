@@ -1,22 +1,13 @@
-# the location of your cluster
-$LOCATION="eastus"     
-
-# the name of the resource group where you want to create your cluster            
-$RESOURCEGROUP="rg-aro"
-
-# the name of your cluster
-$CLUSTER="leandroarocluster"
-
-# the name of container registry
+$RESOURCEGROUP = "rg-dotnetcontainerapp-aro"
+$LOCATION = "eastus"
+$CLUSTER = "arodotnetcontainerapp"
 $ACR="crcontainerappdemo"
 
 # Create a resource group.
 az group create --name $RESOURCEGROUP --location $LOCATION
 
 # Create Service Principal
-az ad sp create-for-rbac --name "sp-$RESOURCEGROUP-$CLUSTER" > app-service-principal.json
-
-az ad sp list --show-mine -o table
+az ad sp create-for-rbac --name "sp-$RESOURCEGROUP-$CLUSTER"
 
 $SP_CLIENT_ID = <appId>
 $SP_CLIENT_SECRET = <password>
@@ -29,6 +20,10 @@ az role assignment create --role 'Contributor' --assignee-object-id $SP_OBJECT_I
 
 # Get the service principal object ID for the OpenShift
 $ARO_RP_SP_OBJECT_ID = $(az ad sp list --display-name "Azure Red Hat OpenShift RP" --query [0].id -o tsv)
+
+
+# Create GitHub Secrets
+
 
 # Create ACR
 az acr create --resource-group $RESOURCEGROUP --name $ACR --sku Basic

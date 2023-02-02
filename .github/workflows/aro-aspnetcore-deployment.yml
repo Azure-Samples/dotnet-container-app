@@ -9,10 +9,10 @@ on: workflow_dispatch
 #    branches: [ main ]
 
 env:
-  AZ_RG_NAME: 'rg-dotnetcontainerapp'
+  AZ_RG_NAME: 'rg-dotnetcontainerapp-aro'
   AZ_RG_LOCATION: 'eastus'
   AZ_ACR_NAME: 'acrdotnetcontainerapp'
-  AZ_AKS_NAME: 'aksdotnetcontainerapp'
+  AZ_ARO_NAME: 'arodotnetcontainerapp'
   AZ_SQLSERVER_NAME: 'sqldotnetcontainerapp'
   AZ_KV_NAME: 'kvdotnetcontainerap'
   AZ_LOADTEST_NAME: 'ltstdotnetcontainerap'
@@ -42,15 +42,15 @@ jobs:
           fi
 
       # Deploy Bicep file
-      - name: Deploy Template
-        uses: Azure/arm-deploy@v1
-        with:
-          resourceGroupName: ${{ env.AZ_RG_NAME }}
-          region: ${{ env.AZ_RG_LOCATION }}
-          template: src/ContainerApp.IAC/main.bicep
-          deploymentMode: Incremental
-          deploymentName: 'gh-actions'
-          parameters: acrName=${{ env.AZ_ACR_NAME }} clusterName=${{ env.AZ_AKS_NAME }} sqlserverName=${{ env.AZ_SQLSERVER_NAME }} sqlAdminLogin=${{ secrets.AZURE_SQL_USERNAME }} sqlAdminPassword=${{ secrets.AZURE_SQL_PASSWORD }} kvName=${{ env.AZ_KV_NAME }} loadTestName=${{ env.AZ_LOADTEST_NAME }}
+      #- name: Deploy Template
+      #  uses: Azure/arm-deploy@v1
+      #  with:
+      #    resourceGroupName: ${{ env.AZ_RG_NAME }}
+      #    region: ${{ env.AZ_RG_LOCATION }}
+      #    template: src/ContainerApp.IAC/aro.bicep
+      #    deploymentMode: Incremental
+      #    deploymentName: 'gh-actions'
+      #    parameters: acrName=${{ env.AZ_ACR_NAME }} clusterName=${{ env.AZ_ARO_NAME }} aadClientId=${{ secrets.ARO_CLIENT_ID }} aadClientSecret=${{ secrets.ARO_CLIENT_SECRET }} aadObjectId=${{ secrets.ARO_AAD_OBJECT_ID }} rpObjectId=${{ secrets.ARO_RP_OBJECT_ID }} sqlserverName=${{ env.AZ_SQLSERVER_NAME }} sqlAdminLogin=${{ secrets.AZURE_SQL_USERNAME }} sqlAdminPassword=${{ secrets.AZURE_SQL_PASSWORD }} kvName=${{ env.AZ_KV_NAME }} loadTestName=${{ env.AZ_LOADTEST_NAME }}
           
   build:
     needs: iac
@@ -73,8 +73,7 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       
-      - name: Set the value in bash
-        id: setup-variables
+      - name: Set ACR variables
         run: |
           url_acr=$(az acr show -n ${{ env.AZ_ACR_NAME }} --query loginServer --output tsv)
           login_acr=$(az acr credential show -n ${{ env.AZ_ACR_NAME }} --query username --output tsv)
@@ -137,24 +136,24 @@ jobs:
           echo URL TODO API = $urlTodoApi
           echo URL WEATHER API = $urlWeatherApi
 
-          echo "*** Replace ContainerApp.WebApp/k8s-deployment.yaml ***"
-          sed -i "s|_ImageUrlApp_|$urlApp|g" src/ContainerApp.WebApp/k8s-deployment.yaml
+          echo "*** Replace ContainerApp.WebApp/aro-deployment.yaml ***"
+          sed -i "s|_ImageUrlApp_|$urlApp|g" src/ContainerApp.WebApp/aro-deployment.yaml
 
-          echo "*** Replace ContainerApp.TodoApi/k8s-deployment.yaml ***"
-          sed -i "s|_ImageUrlApi_|$urlTodoApi|g" src/ContainerApp.TodoApi/k8s-deployment.yaml
-          sed -i "s|_ConnString_|$sqlConnString|g" src/ContainerApp.TodoApi/k8s-deployment.yaml
+          echo "*** Replace ContainerApp.TodoApi/aro-deployment.yaml ***"
+          sed -i "s|_ImageUrlApi_|$urlTodoApi|g" src/ContainerApp.TodoApi/aro-deployment.yaml
+          sed -i "s|_ConnString_|$sqlConnString|g" src/ContainerApp.TodoApi/aro-deployment.yaml
 
-          echo "*** Replace ContainerApp.WeatherApi/k8s-deployment.yaml ***"
-          sed -i "s|_ImageUrlApi_|$urlWeatherApi|g" src/ContainerApp.WeatherApi/k8s-deployment.yaml
+          echo "*** Replace ContainerApp.WeatherApi/aro-deployment.yaml ***"
+          sed -i "s|_ImageUrlApi_|$urlWeatherApi|g" src/ContainerApp.WeatherApi/aro-deployment.yaml
 
       - name: Upload Kubernetes files
         uses: actions/upload-artifact@v3.0.0
         with:
           name: k8s
           path: |
-            src/ContainerApp.WebApp/k8s-deployment.yaml
-            src/ContainerApp.TodoApi/k8s-deployment.yaml
-            src/ContainerApp.WeatherApi/k8s-deployment.yaml
+            src/ContainerApp.WebApp/aro-deployment.yaml
+            src/ContainerApp.TodoApi/aro-deployment.yaml
+            src/ContainerApp.WeatherApi/aro-deployment.yaml
         
   release-to-dev:
     needs: build
@@ -167,26 +166,63 @@ jobs:
           name: k8s
           path: my-app-artifact
 
+      - name: Install CLI tools from OpenShift Mirror
+        uses: redhat-actions/openshift-tools-installer@v1
+        with:
+          source: "mirror"
+          oc: "3"
+
       # Log into Azure
       - name: Login
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # Set the target Azure Kubernetes Service (AKS) cluster. 
-      - name: Deploy set context
-        uses: azure/aks-set-context@v1
-        with:
-          creds: '${{ secrets.AZURE_CREDENTIALS }}'
-          cluster-name: ${{ env.AZ_AKS_NAME }}
-          resource-group: ${{ env.AZ_RG_NAME }}
+      - name: Set ARO variables
+        id: aro-variables
+        run: |
+          aroApiServer=$(az aro show --name ${{ env.AZ_ARO_NAME }} --resource-group ${{ env.AZ_RG_NAME }} --query "apiserverProfile.url" -o tsv)
+          aroPass=$(az aro list-credentials --name ${{ env.AZ_ARO_NAME }} --resource-group ${{ env.AZ_RG_NAME }} --query "kubeadminPassword" -o tsv)
 
-      # Deploy app to AKS
-      - name: Deploy to k8s
-        uses: azure/k8s-deploy@v1
+          echo "::add-mask::$aroApiServer"
+          echo "::add-mask::$aroPass"
+
+          echo "ARO_API_SERVER=$aroApiServer" >> $GITHUB_ENV
+          echo "ARO_API_PASS=$aroPass" >> $GITHUB_ENV
+
+      - name: Log in to OpenShift
+        uses: redhat-actions/oc-login@v1
         with:
-          namespace: default
-          manifests: |
-            my-app-artifact/ContainerApp.WebApp/k8s-deployment.yaml
-            my-app-artifact/ContainerApp.TodoApi/k8s-deployment.yaml
-            my-app-artifact/ContainerApp.WeatherApi/k8s-deployment.yaml
+          openshift_server_url: ${{ env.ARO_API_SERVER }}
+          openshift_username: 'kubeadmin'
+          openshift_password: ${{ env.ARO_API_PASS }}
+          insecure_skip_tls_verify: true
+          namespace: 'default'
+      
+      - name: Set ACR variables
+        run: |
+          url_acr=$(az acr show -n ${{ env.AZ_ACR_NAME }} --query loginServer --output tsv)
+          login_acr=$(az acr credential show -n ${{ env.AZ_ACR_NAME }} --query username --output tsv)
+          password_acr=$(az acr credential show -n ${{ env.AZ_ACR_NAME }} --query passwords[0].value --output tsv)
+
+          echo "::add-mask::$url_acr"
+          echo "::add-mask::$login_acr"
+          echo "::add-mask::$password_acr"
+
+          echo "ACR_URL=$url_acr" >> $GITHUB_ENV
+          echo "ACR_LOGIN=$login_acr" >> $GITHUB_ENV
+          echo "ACR_PASSWORD=$password_acr" >> $GITHUB_ENV
+      
+      - name: Create ACR Secret
+        run: |
+          if [ $(oc get secret acr-secret --ignore-not-found) = false ]; then
+            oc create secret docker-registry --docker-server=${{ env.ACR_URL }} --docker-username=${{ env.ACR_LOGIN }} --docker-password=${{ env.ACR_PASSWORD }} --docker-email=unused acr-secret
+          else
+            echo "Secrete already exists"
+          fi
+
+      - name: Apply Deployment
+        run: |
+          oc apply -f my-app-artifact/ContainerApp.WebApp/aro-deployment.yaml
+          oc apply -f my-app-artifact/ContainerApp.TodoApi/aro-deployment.yaml
+          oc apply -f my-app-artifact/ContainerApp.WeatherApi/aro-deployment.yaml

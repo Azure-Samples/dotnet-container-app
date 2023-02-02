@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
         - name: containerapp-webapp
-          image: "crcontainerappdemo.azurecr.io/containerapp.webapp:957"
+          image: "_ImageUrlApp_"
           env:
             - name: ApiAddress
               value: "http://containerapp-todoapi-svc.default.svc.cluster.local"

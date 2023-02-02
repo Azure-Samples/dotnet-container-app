@@ -1,4 +1,4 @@
-name: k8s-aspnetcore.deployment
+name: aks-aspnetcore.deployment
 
 on: workflow_dispatch
 
