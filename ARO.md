@@ -1,3 +1,6 @@
+# ARO command line
+
+```ps
 $RESOURCEGROUP = "rg-dotnetcontainerapp-aro"
 $LOCATION = "eastus"
 $CLUSTER = "arodotnetcontainerapp"
@@ -20,10 +23,6 @@ az role assignment create --role 'Contributor' --assignee-object-id $SP_OBJECT_I
 
 # Get the service principal object ID for the OpenShift
 $ARO_RP_SP_OBJECT_ID = $(az ad sp list --display-name "Azure Red Hat OpenShift RP" --query [0].id -o tsv)
-
-
-# Create GitHub Secrets
-
 
 # Create ACR
 az acr create --resource-group $RESOURCEGROUP --name $ACR --sku Basic
@@ -79,8 +78,8 @@ oc apply -f .\k8s-deployment.yaml
 
 # Ver a URL do Service
 oc get services
+```
 
 # References
-https://learn.microsoft.com/en-us/azure/openshift/tutorial-create-cluster
-https://docs.openshift.com/container-platform/4.9/installing/installing_azure/installing-azure-user-infra.html
-https://learn.microsoft.com/en-us/azure/openshift/quickstart-openshift-arm-bicep-template?pivots=aro-bicep
+- [Tutorial Create Cluster](https://learn.microsoft.com/en-us/azure/openshift/tutorial-create-cluster)
+- [ARO Bicep](https://learn.microsoft.com/en-us/azure/openshift/quickstart-openshift-arm-bicep-template?pivots=aro-bicep)
