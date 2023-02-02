@@ -226,21 +226,3 @@ jobs:
           oc apply -f my-app-artifact/ContainerApp.WebApp/aro-deployment.yaml
           oc apply -f my-app-artifact/ContainerApp.TodoApi/aro-deployment.yaml
           oc apply -f my-app-artifact/ContainerApp.WeatherApi/aro-deployment.yaml
-
-# # Set the target Azure Kubernetes Service (AKS) cluster. 
-      # - name: Deploy set context
-      #   uses: azure/aks-set-context@v1
-      #   with:
-      #     creds: '${{ secrets.AZURE_CREDENTIALS }}'
-      #     cluster-name: ${{ env.AZ_AKS_NAME }}
-      #     resource-group: ${{ env.AZ_RG_NAME }}
-
-      # # Deploy app to AKS
-      # - name: Deploy to k8s
-      #   uses: azure/k8s-deploy@v1
-      #   with:
-      #     namespace: default
-      #     manifests: |
-      #       my-app-artifact/ContainerApp.WebApp/aro-deployment.yaml
-      #       my-app-artifact/ContainerApp.TodoApi/aro-deployment.yaml
-      #       my-app-artifact/ContainerApp.WeatherApi/aro-deployment.yaml
