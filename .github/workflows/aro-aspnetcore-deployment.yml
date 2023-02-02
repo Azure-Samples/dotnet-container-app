@@ -215,7 +215,11 @@ jobs:
       
       - name: Create ACR Secret
         run: |
-          oc create secret docker-registry --docker-server=${{ env.ACR_URL }} --docker-username=${{ env.ACR_LOGIN }} --docker-password=${{ env.ACR_PASSWORD }} --docker-email=unused acr-secret
+          if [ $(oc get secret acr-secret --ignore-not-found) = false ]; then
+            oc create secret docker-registry --docker-server=${{ env.ACR_URL }} --docker-username=${{ env.ACR_LOGIN }} --docker-password=${{ env.ACR_PASSWORD }} --docker-email=unused acr-secret
+          else
+            echo "Secrete already exists"
+          fi
 
       - name: Apply Deployment
         run: |
