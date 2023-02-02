@@ -16,6 +16,20 @@ The project is divided as follows:
 - **src/ContainerApp.WebApp:** Web Application interact with rest TODO API and
 - **src/ContainerApp.Test:** Unit Testing project
 
+This sample application can use the following Azure features:
+
+- **[Azure Container Registry (ACR)](https://docs.microsoft.com/en-us/azure/container-registry/)** ACR allows you to build, store, and manage container images and artifacts in a private registry for all types of container deployments
+
+- **[Azure Kubernetes Services (AKS)](https://docs.microsoft.com/en-us/azure/aks/intro-kubernetes)** AKS simplifies deploying a managed Kubernetes cluster in Azure by offloading the operational overhead to Azure
+
+- **[Azure RedHat OpenShift (ARO)](https://learn.microsoft.com/en-us/azure/openshift/)** Azure Red Hat OpenShift provides highly available, fully managed OpenShift clusters on demand, monitored and operated jointly by Microsoft and Red Hat. Kubernetes is at the core of Red Hat OpenShift
+
+- **[SQL Server Database](https://docs.microsoft.com/en-us/azure/azure-sql/azure-sql-iaas-vs-paas-what-is-overview?view=azuresql)** is a relational database-as-a-service (DBaaS) hosted in Azure that falls into the industry category of Platform-as-a-Service (PaaS).
+
+- **[Azure Monitor](https://docs.microsoft.com/en-us/azure/azure-monitor/overview)** helps you maximize the availability and performance of your applications and services. It delivers a comprehensive solution for collecting, analyzing, and acting on telemetry from your cloud and on-premises environments.
+
+- **[Azure Key Vault](https://learn.microsoft.com/en-us/azure/key-vault/general/)** is a cloud service for securely storing and accessing secrets. A secret is anything that you want to tightly control access to, such as API keys, passwords, certificates, or cryptographic keys.
+
 ## Getting Started
 
 ### Prerequisites
@@ -107,20 +121,6 @@ Store the output JSON as the value of a GitHub Actions secret named 'AZURE_CREDE
 Create other two secrets
 1. Store SQL username 'AZURE_SQL_USERNAME' 
 2. Store SQL password 'AZURE_SQL_PASSWORD'
-
-This sample application can use the following Azure features:
-
-- **[Azure Container Registry (ACR)](https://docs.microsoft.com/en-us/azure/container-registry/)** ACR allows you to build, store, and manage container images and artifacts in a private registry for all types of container deployments
-
-- **[Azure Kubernetes Services (AKS)](https://docs.microsoft.com/en-us/azure/aks/intro-kubernetes)** AKS simplifies deploying a managed Kubernetes cluster in Azure by offloading the operational overhead to Azure
-
-- **[Azure RedHat OpenShift (ARO)](https://learn.microsoft.com/en-us/azure/openshift/)** Azure Red Hat OpenShift provides highly available, fully managed OpenShift clusters on demand, monitored and operated jointly by Microsoft and Red Hat. Kubernetes is at the core of Red Hat OpenShift
-
-- **[SQL Server Database](https://docs.microsoft.com/en-us/azure/azure-sql/azure-sql-iaas-vs-paas-what-is-overview?view=azuresql)** is a relational database-as-a-service (DBaaS) hosted in Azure that falls into the industry category of Platform-as-a-Service (PaaS).
-
-- **[Azure Monitor](https://docs.microsoft.com/en-us/azure/azure-monitor/overview)** helps you maximize the availability and performance of your applications and services. It delivers a comprehensive solution for collecting, analyzing, and acting on telemetry from your cloud and on-premises environments.
-
-- **[Azure Key Vault](https://learn.microsoft.com/en-us/azure/key-vault/general/)** is a cloud service for securely storing and accessing secrets. A secret is anything that you want to tightly control access to, such as API keys, passwords, certificates, or cryptographic keys.
 
 ## Deploy to Azure Kubernetes Services (AKS)
 
