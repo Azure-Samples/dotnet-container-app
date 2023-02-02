@@ -196,8 +196,7 @@ jobs:
         with:
           openshift_server_url: ${{ env.ARO_API_SERVER }}
           openshift_username: 'kubeadmin'
-          openshift_password: ${{ secrets.ARO_API_PASS }}
-          #openshift_token: ${{ env.ARO_API_PASS }}
+          openshift_password: ${{ env.ARO_API_PASS }}
           insecure_skip_tls_verify: true
           namespace: 'default'
       
