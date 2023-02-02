@@ -73,8 +73,7 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       
-      - name: Set the value in bash
-        id: setup-variables
+      - name: Set ACR variables
         run: |
           url_acr=$(az acr show -n ${{ env.AZ_ACR_NAME }} --query loginServer --output tsv)
           login_acr=$(az acr credential show -n ${{ env.AZ_ACR_NAME }} --query username --output tsv)
@@ -200,7 +199,31 @@ jobs:
           insecure_skip_tls_verify: true
           namespace: 'default'
       
-      # # Set the target Azure Kubernetes Service (AKS) cluster. 
+      - name: Set ACR variables
+        run: |
+          url_acr=$(az acr show -n ${{ env.AZ_ACR_NAME }} --query loginServer --output tsv)
+          login_acr=$(az acr credential show -n ${{ env.AZ_ACR_NAME }} --query username --output tsv)
+          password_acr=$(az acr credential show -n ${{ env.AZ_ACR_NAME }} --query passwords[0].value --output tsv)
+
+          echo "::add-mask::$url_acr"
+          echo "::add-mask::$login_acr"
+          echo "::add-mask::$password_acr"
+
+          echo "ACR_URL=$url_acr" >> $GITHUB_ENV
+          echo "ACR_LOGIN=$login_acr" >> $GITHUB_ENV
+          echo "ACR_PASSWORD=$password_acr" >> $GITHUB_ENV
+      
+      - name: Create ACR Secret
+        run: |
+          oc create secret docker-registry --docker-server=${{ env.ACR_URL }} --docker-username=${{ env.ACR_LOGIN }} --docker-password=${{ env.ACR_PASSWORD }} --docker-email=unused acr-secret
+
+      - name: Apply Deployment
+        run: |
+          oc apply -f my-app-artifact/ContainerApp.WebApp/aro-deployment.yaml
+          oc apply -f my-app-artifact/ContainerApp.TodoApi/aro-deployment.yaml
+          oc apply -f my-app-artifact/ContainerApp.WeatherApi/aro-deployment.yaml
+
+# # Set the target Azure Kubernetes Service (AKS) cluster. 
       # - name: Deploy set context
       #   uses: azure/aks-set-context@v1
       #   with:
