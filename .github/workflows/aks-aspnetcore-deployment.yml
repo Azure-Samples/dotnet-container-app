@@ -14,8 +14,8 @@ env:
   AZ_ACR_NAME: 'acrdotnetcontainerapp'
   AZ_AKS_NAME: 'aksdotnetcontainerapp'
   AZ_SQLSERVER_NAME: 'sqldotnetcontainerapp'
-  AZ_KV_NAME: 'kvdotnetcontainerap'
-  AZ_LOADTEST_NAME: 'ltstdotnetcontainerap'
+  AZ_KV_NAME: 'kvdotnetcontainerapp'
+  AZ_LOADTEST_NAME: 'ltstdotnetcontainerapp'
 
 jobs:
 
