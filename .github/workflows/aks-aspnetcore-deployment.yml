@@ -21,7 +21,6 @@ jobs:
 
   iac:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
     steps:
       # Checkout code
       - name: Checkout
