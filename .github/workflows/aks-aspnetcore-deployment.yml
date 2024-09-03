@@ -162,7 +162,7 @@ jobs:
     environment: DEV
     steps:
       - name: Download k8s artifact
-        uses: actions/download-artifact@v3.0.0
+        uses: actions/download-artifact@v4.1.7
         with:
           name: k8s
           path: my-app-artifact
